@@ -28,28 +28,12 @@ public class Main {
         // Open the Welcome window
 
         System.out.println("Hello, World!");
-        Zipper zipfile = new Zipper("archive.zip");
+        Zipper zipfile = new Zipper();
         final WindowContext ctx = new WindowContext(logger, zipfile);
 
         MainWindow window = new MainWindow(ctx, "Главное окно", 800,500);
         window.setVisible(true);
 
-        JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-
-        // set the selection mode to directories only
-        j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-        int r = j.showOpenDialog(null);
-
-        if (r == APPROVE_OPTION) {
-            File dirRoot = Paths.get(j.getCurrentDirectory().getAbsolutePath(), j.getSelectedFile().getName()).toFile();
-
-            System.out.println(dirRoot);
-            zipfile.traverseDir("",dirRoot,true);
-            //zipfile.zipFile(dirRoot, zipfile.filename, zipfile.zipStream);
-            zipfile.zipStream.close();
-            zipfile.stream.close();
-        }
 
     }
 }
