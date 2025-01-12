@@ -38,6 +38,15 @@ public abstract class Window extends JFrame {
         );
     }
 
+    protected void showInfo( String message) {
+        JOptionPane.showMessageDialog(
+                this,
+                message,
+                "Информация",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
     /**
      * Закрывает это окно и открывает новое окно с выбранным классом
      */

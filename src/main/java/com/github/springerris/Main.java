@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         final Logger logger = Logger.getLogger("PP2024");
         logger.log(Level.INFO, "Starting PP2024");
 
@@ -30,7 +30,12 @@ public class Main {
         System.out.println("Hello, World!");
         Zipper zipfile = new Zipper();
         final WindowContext ctx = new WindowContext(logger, zipfile);
-
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
         MainWindow window = new MainWindow(ctx, "Главное окно", 800,500);
         window.setVisible(true);
 
