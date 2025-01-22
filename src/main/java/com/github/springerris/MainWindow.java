@@ -213,7 +213,7 @@ public class MainWindow extends GridBagWindow{
 
         buttonChoose.addActionListener((ActionEvent a) -> {
 
-            ChoiceWindow cw = new ChoiceWindow(this.ctx, "Выбрать сервис",300,100);
+            ChoiceWindowUpload cw = new ChoiceWindowUpload(this.ctx, "Выбрать сервис",300,100, "Отправить на Yandex Disk","Отправить на Google Drive");
                 cw.setVisible(true);
 
         });

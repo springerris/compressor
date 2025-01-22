@@ -20,16 +20,15 @@ import java.util.zip.ZipOutputStream;
 import static java.awt.GridBagConstraints.BOTH;
 import static java.awt.GridBagConstraints.HORIZONTAL;
 
-public class ChoiceWindow extends GridBagWindow{
-    boolean uploading = true;
-    public ChoiceWindow(WindowContext ctx, String title, int initialWidth, int initialHeight){
-        super(ctx, title, initialWidth, initialHeight);
-    }
+public class ChoiceWindowBase extends GridBagWindow{
 
+    protected String option1;
+    protected String option2;
 
-    public ChoiceWindow(WindowContext ctx, String title, int initialWidth, int initialHeight, boolean uploading) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public ChoiceWindowBase(WindowContext ctx, String title, int initialWidth, int initialHeight) {
         super(ctx, title, initialWidth, initialHeight);
-        this.uploading = uploading;
+        this.option1 = option1;
+        this.option2 = option2;
     }
 
     @Override
@@ -39,8 +38,8 @@ public class ChoiceWindow extends GridBagWindow{
 
 
         Border padding = new EmptyBorder(8, 8, 8, 8);
-        JButton pickYan = new JButton("Отправить на Yandex Disk");
-        JButton pickGD = new JButton("Отправить на Google Drive");
+        JButton pickYan = new JButton(option1);
+        JButton pickGD = new JButton(option2);
 
         pickYan.addActionListener((ActionEvent e) -> {
             YanHandler yh = new YanHandler(this.ctx, this);

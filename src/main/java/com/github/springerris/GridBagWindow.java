@@ -14,6 +14,8 @@ public abstract class GridBagWindow extends Window {
         super(ctx, title, initialWidth, initialHeight);
     }
 
+
+
     @Override
     protected void setupLayout() {
         final Container contentPane = this.getContentPane();
