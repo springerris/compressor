@@ -34,7 +34,6 @@ public class YanHandler {
                 .clientSecret("0fd69c030af349c4bec206126fd5b01d")
                 .redirectURI("http://127.0.0.1:8015/")
                 .scopes(AuthScope.INFO, AuthScope.READ, AuthScope.WRITE)
-
                 .build();
 
         auth.openURL();
