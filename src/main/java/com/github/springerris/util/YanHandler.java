@@ -1,5 +1,7 @@
-package com.github.springerris;
+package com.github.springerris.util;
 
+import com.github.springerris.gui.Window;
+import com.github.springerris.gui.WindowContext;
 import io.github.wasabithumb.yandisk4j.YanDisk;
 import io.github.wasabithumb.yandisk4j.auth.AuthHandler;
 import io.github.wasabithumb.yandisk4j.auth.AuthResponse;
@@ -19,7 +21,7 @@ public class YanHandler {
     public WindowContext ctx;
     public Window window;
 
-    YanHandler(WindowContext ctx, Window window) {
+    public YanHandler(WindowContext ctx, Window window) {
         this.ctx = ctx;
         this.window = window;
     }

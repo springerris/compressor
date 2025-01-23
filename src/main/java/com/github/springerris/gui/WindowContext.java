@@ -1,6 +1,8 @@
 // Класс, реализующий контекст окна
 
-package com.github.springerris;
+package com.github.springerris.gui;
+
+import com.github.springerris.util.Zipper;
 
 import java.util.logging.Logger;
 

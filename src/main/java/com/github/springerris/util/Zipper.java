@@ -1,4 +1,4 @@
-package com.github.springerris;
+package com.github.springerris.util;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

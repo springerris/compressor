@@ -1,5 +1,9 @@
 package com.github.springerris;
 
+import com.github.springerris.gui.impl.MainWindow;
+import com.github.springerris.gui.WindowContext;
+import com.github.springerris.util.Zipper;
+
 import javax.swing.*;
 
 import java.util.logging.Level;

@@ -1,4 +1,7 @@
-package com.github.springerris;
+package com.github.springerris.gui.impl;
+
+import com.github.springerris.gui.WindowContext;
+import com.github.springerris.util.YanHandler;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

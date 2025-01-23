@@ -1,4 +1,7 @@
-package com.github.springerris;
+package com.github.springerris.gui.helper;
+
+import com.github.springerris.gui.Window;
+import com.github.springerris.gui.WindowContext;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package com.github.springerris;
+package com.github.springerris.gui;
 
 import javax.swing.*;
 import java.lang.reflect.Constructor;
@@ -28,7 +28,7 @@ public abstract class Window extends JFrame {
     /**
      * Открывает окно с сообщением ошибки
      */
-    protected void showError( String message) {
+    public void showError(String message) {
         JOptionPane.showMessageDialog(
                 this,
                 message,
@@ -37,7 +37,7 @@ public abstract class Window extends JFrame {
         );
     }
 
-    protected void showInfo( String message) {
+    public void showInfo(String message) {
         JOptionPane.showMessageDialog(
                 this,
                 message,

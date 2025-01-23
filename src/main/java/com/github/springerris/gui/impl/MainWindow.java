@@ -1,4 +1,7 @@
-package com.github.springerris;
+package com.github.springerris.gui.impl;
+
+import com.github.springerris.gui.WindowContext;
+import com.github.springerris.gui.helper.GridBagWindow;
 
 import javax.swing.*;
 import javax.swing.border.Border;
