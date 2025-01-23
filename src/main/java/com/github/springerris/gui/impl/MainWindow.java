@@ -39,8 +39,8 @@ public class MainWindow extends GridBagWindow {
     private List<File> currentFiles;
     private boolean atRoot = true;
 
-    public MainWindow(WindowContext ctx, String title, int initialWidth, int initialHeight) {
-        super(ctx, title, initialWidth, initialHeight);
+    public MainWindow(WindowContext ctx) {
+        super(ctx, "Главное окно", 800, 500);
     }
 
     @Override

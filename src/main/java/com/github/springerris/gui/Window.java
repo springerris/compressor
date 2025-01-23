@@ -10,7 +10,7 @@ import java.util.logging.Level;
 public abstract class Window extends JFrame {
 
     protected final WindowContext ctx;
-    public Window( WindowContext ctx,  String title, int initialWidth, int initialHeight) {
+    public Window(WindowContext ctx,  String title, int initialWidth, int initialHeight) {
         super(title);
         this.ctx = ctx;
         this.setSize(initialWidth, initialHeight);

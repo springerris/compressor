@@ -27,7 +27,7 @@ public class Main {
         logger.log(Level.INFO, "Created application context");
 
         // Open main window
-        MainWindow window = new MainWindow(ctx, "Главное окно", 800, 500);
+        MainWindow window = new MainWindow(ctx);
         window.setVisible(true);
     }
 
