@@ -2,7 +2,6 @@ package com.github.springerris;
 
 import javax.swing.*;
 import java.lang.reflect.Constructor;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 /**

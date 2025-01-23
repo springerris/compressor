@@ -11,14 +11,12 @@ public class WindowContext {
 
     private final Logger logger;
     private final Zipper zipper;
-    private String user;
     public WindowContext(Logger logger, Zipper zipper) {
         this.logger = logger;
         this.zipper = zipper;
-        this.user = null;
     }
 
-    public  Logger logger() {
+    public Logger logger() {
         return this.logger;
     }
 
@@ -26,6 +24,5 @@ public class WindowContext {
     public Zipper zipper() {
         return this.zipper;
     }
-
 
 }

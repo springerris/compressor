@@ -4,17 +4,13 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 public class Zipper {
-
-    public Set<Path> getSelected() {
-        return selected;
-    }
 
     private final Set<Path> selected;
     private final boolean includeMetadata;
@@ -40,6 +36,10 @@ public class Zipper {
 
     public boolean includes(Path path) {
         return this.selected.contains(path) || this.anyParentSelected(path);
+    }
+
+    public Set<Path> getSelected() {
+        return Collections.unmodifiableSet(this.selected);
     }
 
     //
