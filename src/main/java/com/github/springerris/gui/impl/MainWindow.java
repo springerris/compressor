@@ -185,15 +185,7 @@ public class MainWindow extends GridBagWindow {
     }
 
     private void onClickChoose(ActionEvent e) {
-        ChoiceWindowUpload cw = new ChoiceWindowUpload(
-                this.ctx,
-                "Выбрать сервис",
-                300,
-                100,
-                "Отправить на Yandex Disk",
-                "Отправить на Google Drive"
-        );
-        cw.setVisible(true);
+        this.transfer(UploadChoiceWindow.class);
     }
 
     private void updateList() {

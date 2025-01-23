@@ -49,7 +49,7 @@ public abstract class Window extends JFrame {
     /**
      * Закрывает это окно и открывает новое окно с выбранным классом
      */
-    protected void transfer( Class<? extends Window> clazz) {
+    protected void transfer(Class<? extends Window> clazz) {
         Window window;
         try {
             Constructor<? extends Window> con = clazz.getConstructor(WindowContext.class);
