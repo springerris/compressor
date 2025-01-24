@@ -1,19 +1,17 @@
-// Класс, наследующий Window, с реализацией специфического расположения элементов
+package com.github.springerris.gui.helper;
 
-package com.github.springerris;
-
-import com.github.springerris.Window;
-import com.github.springerris.WindowContext;
+import com.github.springerris.gui.Window;
+import com.github.springerris.gui.WindowContext;
 
 import javax.swing.*;
 import java.awt.*;
 
+/** Класс, наследующий Window, с реализацией специфического расположения элементов */
 public abstract class GridBagWindow extends Window {
 
-    public GridBagWindow(WindowContext ctx,  String title, int initialWidth, int initialHeight) {
+    public GridBagWindow(WindowContext ctx, String title, int initialWidth, int initialHeight) {
         super(ctx, title, initialWidth, initialHeight);
     }
-
 
 
     @Override
@@ -23,15 +21,15 @@ public abstract class GridBagWindow extends Window {
         contentPane.setLayout(new GridBagLayout());
     }
 
-    protected void addElement(int gridx, int gridy, int width,  JComponent comp) {
+    protected void addElement(int gridx, int gridy, int width, JComponent comp) {
         this.addElement(gridx, gridy, width, comp, GridBagConstraints.VERTICAL);
     }
 
-    protected void addElement(int gridx, int gridy, int width,  JComponent comp, int fill) {
+    protected void addElement(int gridx, int gridy, int width, JComponent comp, int fill) {
         this.addElement(gridx, gridy, width, 1, comp, fill);
     }
 
-    protected void addElement(int gridx, int gridy, int width, int height,  JComponent comp, int fill) {
+    protected void addElement(int gridx, int gridy, int width, int height, JComponent comp, int fill) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = fill;
         c.weightx = 0.5d;
@@ -41,4 +39,5 @@ public abstract class GridBagWindow extends Window {
         c.gridheight = height;
         this.getContentPane().add(comp, c);
     }
+
 }

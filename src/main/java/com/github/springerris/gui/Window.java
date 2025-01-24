@@ -1,8 +1,7 @@
-package com.github.springerris;
+package com.github.springerris.gui;
 
 import javax.swing.*;
 import java.lang.reflect.Constructor;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 /**
@@ -11,7 +10,7 @@ import java.util.logging.Level;
 public abstract class Window extends JFrame {
 
     protected final WindowContext ctx;
-    public Window( WindowContext ctx,  String title, int initialWidth, int initialHeight) {
+    public Window(WindowContext ctx,  String title, int initialWidth, int initialHeight) {
         super(title);
         this.ctx = ctx;
         this.setSize(initialWidth, initialHeight);
@@ -29,7 +28,7 @@ public abstract class Window extends JFrame {
     /**
      * Открывает окно с сообщением ошибки
      */
-    protected void showError( String message) {
+    public void showError(String message) {
         JOptionPane.showMessageDialog(
                 this,
                 message,
@@ -38,7 +37,7 @@ public abstract class Window extends JFrame {
         );
     }
 
-    protected void showInfo( String message) {
+    public void showInfo(String message) {
         JOptionPane.showMessageDialog(
                 this,
                 message,
@@ -50,7 +49,7 @@ public abstract class Window extends JFrame {
     /**
      * Закрывает это окно и открывает новое окно с выбранным классом
      */
-    protected void transfer( Class<? extends Window> clazz) {
+    protected void transfer(Class<? extends Window> clazz) {
         Window window;
         try {
             Constructor<? extends Window> con = clazz.getConstructor(WindowContext.class);
