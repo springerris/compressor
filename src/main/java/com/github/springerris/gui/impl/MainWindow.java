@@ -3,6 +3,7 @@ package com.github.springerris.gui.impl;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.GridBagWindow;
 import com.github.springerris.util.Listeners;
+import io.github.wasabithumb.magma4j.Magma;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -13,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -86,8 +88,10 @@ public class MainWindow extends GridBagWindow {
     }
 
     private void onClickFileList(MouseEvent e) {
+        // \/ Double click, silly \/
         // TODO: is this a mistake? why would we ignore a click count of 1? should it be < instead of <=?
         if (e.getClickCount() <= 1) return;
+        System.out.println("DOUBLE CLICK!");
         for (File f : currentFiles) {
             if (!Objects.equals(fileList.getSelectedValue(), f.getName())) continue;
             if (!f.isDirectory()) break;
@@ -95,9 +99,11 @@ public class MainWindow extends GridBagWindow {
             if (list == null) throw new AssertionError("Directory listing for " + f + " is null");
             atRoot = false;
             currentFiles = List.of(list);
+
             System.out.println(f);
             break;
         }
+        updateList();
     }
 
     private void onClickMoveUp(ActionEvent e) {
@@ -163,17 +169,38 @@ public class MainWindow extends GridBagWindow {
     }
 
     private void onClickWriteZip(ActionEvent e) {
+        String password = "";
         JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         j.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         int r = j.showSaveDialog(this);
         if (r == APPROVE_OPTION) {
+
+            int isProtected = JOptionPane.showConfirmDialog(this,
+                    "Добавить пароль для доступа к архиву?",
+                    "Выбор пароля",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+            if (isProtected == JOptionPane.YES_OPTION) {
+                while (password.isBlank()) {
+                    password = JOptionPane.showInputDialog("Введите пароль для архива:");
+                }
+            }
             try {
                 File file = j.getSelectedFile();
-                FileOutputStream fos = new FileOutputStream(file);
+                OutputStream fos = new FileOutputStream(file);
+                if (!password.isBlank()) {
+                    System.out.println("PASSWORD IS " + password);
+                    byte[] key = Magma.generateKeyFromPassword(password);
+                    fos = Magma.newOutputStream(fos,key);
+                }
+
                 ZipOutputStream zos = new ZipOutputStream(fos);
+
                 ctx.zipper().write(file);
                 System.out.println(file.getName());
+                zos.close();
             } catch (IOException e1) {
                 this.reportIOException(e1);
             }
