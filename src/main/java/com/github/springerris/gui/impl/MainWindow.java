@@ -184,21 +184,20 @@ public class MainWindow extends GridBagWindow {
             );
             if (isProtected == JOptionPane.YES_OPTION) {
                 while (password.isBlank()) {
-                    password = JOptionPane.showInputDialog("Введите пароль для архива:");
+                    password = JOptionPane.showInputDialog("Введите пароль для архива");
                 }
             }
             try {
                 File file = j.getSelectedFile();
                 OutputStream fos = new FileOutputStream(file);
                 if (!password.isBlank()) {
-                    System.out.println("PASSWORD IS " + password);
                     byte[] key = Magma.generateKeyFromPassword(password);
                     fos = Magma.newOutputStream(fos,key);
                 }
 
                 ZipOutputStream zos = new ZipOutputStream(fos);
 
-                ctx.zipper().write(file);
+                ctx.zipper().write(zos);
                 System.out.println(file.getName());
                 zos.close();
             } catch (IOException e1) {
