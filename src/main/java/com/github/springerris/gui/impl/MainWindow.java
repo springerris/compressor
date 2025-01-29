@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileSystemView;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -37,6 +38,7 @@ public class MainWindow extends GridBagWindow {
     private JButton buttonListHead;
     private JButton buttonMoveUp;
     private JButton buttonWriteZip;
+    private JButton buttonExtractZip;
     private JList<String> fileList;
     private DefaultListModel<String> files;
     private List<File> currentFiles;
@@ -48,19 +50,27 @@ public class MainWindow extends GridBagWindow {
 
     @Override
     protected void setupContent() {
+        JPanel buttonPane = new JPanel();
+        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+
         Border padding = new EmptyBorder(8, 8, 8, 8);
+
+        buttonPane.setBorder(padding);
         files = new DefaultListModel<>();
         files.add(0, "AAA");
         currentFiles = new ArrayList<>();
         buttonAddFile = new JButton(I18N.WINDOW_MAIN_BUTTON_ADD_FILE.get());
         buttonWriteZip = new JButton(I18N.WINDOW_MAIN_BUTTON_WRITE_ZIP.get());
+        buttonExtractZip = new JButton(I18N.WINDOW_MAIN_BUTTON_EXTRACT_ZIP.get());
         buttonMoveUp = new JButton(I18N.WINDOW_MAIN_BUTTON_ASCEND.get());
         buttonAddDir = new JButton(I18N.WINDOW_MAIN_BUTTON_ADD_DIR.get());
+
         buttonMoveUp.setIcon(UIManager.getIcon("FileChooser.upFolderIcon"));
         buttonAddDir.setIcon(UIManager.getIcon("FileChooser.newFolderIcon"));
         buttonAddFile.setIcon(UIManager.getIcon("FileView.fileIcon"));
         buttonChoose = new JButton(I18N.WINDOW_MAIN_BUTTON_SEND.get());
         buttonWriteZip.setIcon(UIManager.getIcon("FileView.hardDriveIcon"));
+        buttonExtractZip.setIcon(UIManager.getIcon("FileView.hardDriveIcon"));
         buttonChoose.setIcon(UIManager.getIcon("FileView.computerIcon"));
         buttonListHead = new JButton("DEBUG HEAD");
         buttonListHead.addActionListener((ActionEvent a) -> {
@@ -69,23 +79,29 @@ public class MainWindow extends GridBagWindow {
         fileList = new JList<>(files);
 
         buttonMoveUp.setBorder(padding);
-        buttonAddFile.setBorder(padding);
 
         fileList.addMouseListener(Listeners.mouseClicked(this::onClickFileList));
         buttonMoveUp.addActionListener(this::onClickMoveUp);
         buttonAddFile.addActionListener(this::onClickAddFile);
         buttonAddDir.addActionListener(this::onClickAddDir);
         buttonWriteZip.addActionListener(this::onClickWriteZip);
+        buttonExtractZip.addActionListener(this::onClickExtractZip);
         buttonChoose.addActionListener(this::onClickChoose);
 
-        //this.addElement(0,0,1,2,buttonAddFile,HORIZONTAL);
-        this.addElement(0, 0, 1, 1, buttonAddDir, HORIZONTAL);
-        this.addElement(1, 0, 1, 1, buttonAddFile, HORIZONTAL);
-        this.addElement(2, 0, 1, 1, buttonWriteZip, HORIZONTAL);
-        this.addElement(3, 0, 1, 1, buttonChoose, HORIZONTAL);
+        this.addElement(0,0,4,1,buttonPane,HORIZONTAL);
+        buttonPane.add(buttonAddDir);
+        buttonPane.add(buttonAddFile);
+        buttonPane.add(buttonWriteZip);
+        buttonPane.add(buttonExtractZip);
+        buttonPane.add(buttonChoose);
         JScrollPane sp = new JScrollPane(fileList);
         this.addElement(0, 1, 1, 1, buttonMoveUp, HORIZONTAL);
-        this.addElement(0, 2, 8, 8, sp, BOTH);
+        this.addElement(1, 1, 3, 1, Box.createRigidArea(new Dimension(this.getWidth()/10*9-10, 0)), HORIZONTAL);
+        this.addElement(0, 2, 4, 8, sp, BOTH);
+    }
+
+    private void onClickExtractZip(ActionEvent actionEvent) {
+
     }
 
     private void onClickFileList(MouseEvent e) {

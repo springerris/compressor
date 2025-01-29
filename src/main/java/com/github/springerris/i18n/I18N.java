@@ -5,10 +5,15 @@ import static com.github.springerris.i18n.LangString.builder;
 /** Internationalization */
 public final class I18N {
 
+
     /** Language in use */
     public static Language LANGUAGE = Language.SYSTEM;
 
-    //
+
+    public static final LangString WINDOW_MAIN_BUTTON_EXTRACT_ZIP = builder()
+            .en("Extract Archive")
+            .ru("<html>Распаковать<br>архив</html>")
+            .build();
 
     public static LangString LIFECYCLE_START = builder()
             .en("Starting PP2024")

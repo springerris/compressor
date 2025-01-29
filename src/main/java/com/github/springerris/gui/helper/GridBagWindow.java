@@ -21,18 +21,18 @@ public abstract class GridBagWindow extends Window {
         contentPane.setLayout(new GridBagLayout());
     }
 
-    protected void addElement(int gridx, int gridy, int width, JComponent comp) {
+    protected void addElement(int gridx, int gridy, int width, Component comp) {
         this.addElement(gridx, gridy, width, comp, GridBagConstraints.VERTICAL);
     }
 
-    protected void addElement(int gridx, int gridy, int width, JComponent comp, int fill) {
+    protected void addElement(int gridx, int gridy, int width, Component comp, int fill) {
         this.addElement(gridx, gridy, width, 1, comp, fill);
     }
 
-    protected void addElement(int gridx, int gridy, int width, int height, JComponent comp, int fill) {
+    protected void addElement(int gridx, int gridy, int width, int height, Component comp, int fill) {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = fill;
-        c.weightx = 0.5d;
+        c.weightx = 0.1d;
         c.gridx = gridx;
         c.gridy = gridy;
         c.gridwidth = width;
