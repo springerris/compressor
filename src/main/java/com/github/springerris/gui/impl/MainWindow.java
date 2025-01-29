@@ -169,44 +169,19 @@ public class MainWindow extends GridBagWindow {
     }
 
     private void onClickWriteZip(ActionEvent e) {
-        String password = "";
         JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         j.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         int r = j.showSaveDialog(this);
-        if (r == APPROVE_OPTION) {
+        if (r != APPROVE_OPTION) return;
 
-            int isProtected = JOptionPane.showConfirmDialog(this,
-                    "Добавить пароль для доступа к архиву?",
-                    "Выбор пароля",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE
-            );
-            if (isProtected == JOptionPane.YES_OPTION) {
-                while (password.isBlank()) {
-                    password = JOptionPane.showInputDialog("Введите пароль для архива");
-                }
-            }
-            try {
-                File file = j.getSelectedFile();
-                OutputStream fos = new FileOutputStream(file);
-                if (!password.isBlank()) {
-                    byte[] key = Magma.generateKeyFromPassword(password);
-                    fos = Magma.newOutputStream(fos,key);
-                }
-
-                ZipOutputStream zos = new ZipOutputStream(fos);
-
-                ctx.zipper().write(zos);
-                System.out.println(file.getName());
-                zos.close();
-            } catch (IOException e1) {
-                this.reportIOException(e1);
-            }
-
-            //zipfile.zipFile(dirRoot, zipfile.filename, zipfile.zipStream);
-            //ctx.zipper().printFiles();
-            //updateList();
+        File file = j.getSelectedFile();
+        try (FileOutputStream fos = new FileOutputStream(file, false);
+             ZipOutputStream zos = createZipStream(fos)
+        ) {
+            this.ctx.zipper().write(zos);
+        } catch (IOException e1) {
+            this.reportIOException(e1);
         }
     }
 
@@ -215,23 +190,33 @@ public class MainWindow extends GridBagWindow {
     }
 
     private void updateList() {
-        fileList.removeAll();
-        files.removeAllElements();
-        List<File> filesL = currentFiles;
-        int i = 0;
-        for (File f : filesL) {
-            files.add(i, f.getName());
-            i++;
+        this.fileList.removeAll();
+        this.updateList(this.currentFiles);
+    }
+
+    private void updateList(List<File> files) {
+        this.files.removeAllElements();
+        for (int i=0; i < files.size(); i++) {
+            this.files.add(i, files.get(i).getName());
         }
     }
 
-    private void updateList(List<File> filesL) {
-        files.removeAllElements();
-        int i = 0;
-        for (File f : filesL) {
-            files.add(i, f.getName());
-            i++;
+    private ZipOutputStream createZipStream(OutputStream os) {
+        int isProtected = JOptionPane.showConfirmDialog(this,
+                "Добавить пароль для доступа к архиву?",
+                "Выбор пароля",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+        if (isProtected == JOptionPane.YES_OPTION) {
+            String password;
+            do {
+                password = JOptionPane.showInputDialog(this, "Введите пароль для архива");
+            } while (password.isEmpty());
+            byte[] key = Magma.generateKeyFromPassword(password);
+            os = Magma.newOutputStream(os, key);
         }
+        return new ZipOutputStream(os);
     }
 
     private void reportIOException(IOException e) {

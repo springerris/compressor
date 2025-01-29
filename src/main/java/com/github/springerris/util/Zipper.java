@@ -1,9 +1,5 @@
 package com.github.springerris.util;
 
-import io.github.wasabithumb.magma4j.Magma;
-import io.github.wasabithumb.magma4j.io.stream.MagmaOutputStream;
-
-import javax.swing.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -72,7 +68,6 @@ public class Zipper {
     }
 
     public void write(ZipOutputStream os) throws IOException {
-        MagmaOutputStream mos = null;
         Set<String> created = new HashSet<>();
         StringBuilder meta = null;
         if (this.includeMetadata) {
@@ -80,10 +75,8 @@ public class Zipper {
             meta.append("entry\tpath\n");
         }
 
-
         for (Path p : this.selected) {
             String prefix = this.buildPrefix(os, p, created);
-
 
             this.traverse(os, p, prefix);
             if (this.includeMetadata) {
