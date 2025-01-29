@@ -3,7 +3,6 @@ package com.github.springerris.gui.helper;
 import com.github.springerris.gui.Window;
 import com.github.springerris.gui.WindowContext;
 
-import javax.swing.*;
 import java.awt.*;
 
 /** Класс, наследующий Window, с реализацией специфического расположения элементов */
@@ -17,7 +16,7 @@ public abstract class GridBagWindow extends Window {
     @Override
     protected void setupLayout() {
         final Container contentPane = this.getContentPane();
-        contentPane.setBackground(new Color(0xFFE8B3));
+        // contentPane.setBackground(new Color(0xFFE8B3));
         contentPane.setLayout(new GridBagLayout());
     }
 
