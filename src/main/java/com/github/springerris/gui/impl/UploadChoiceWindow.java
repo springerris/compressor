@@ -2,12 +2,13 @@ package com.github.springerris.gui.impl;
 
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.ChoiceWindow;
+import com.github.springerris.i18n.I18N;
 import com.github.springerris.util.YanHandler;
 
 public class UploadChoiceWindow extends ChoiceWindow {
 
     public UploadChoiceWindow(WindowContext ctx) {
-        super(ctx, "Выбрать сервис", 300, 100);
+        super(ctx, I18N.WINDOW_UPLOAD_TITLE.get(), 300, 100);
     }
 
     //
@@ -15,8 +16,8 @@ public class UploadChoiceWindow extends ChoiceWindow {
     @Override
     protected String[] getChoices() {
         return new String[] {
-                "Отправить на Yandex Disk",
-                "Отправить на Google Drive"
+                I18N.WINDOW_UPLOAD_OPTION_YANDEX.get(),
+                I18N.WINDOW_UPLOAD_OPTION_DRIVE.get()
         };
     }
 

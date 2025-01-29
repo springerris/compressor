@@ -2,6 +2,7 @@ package com.github.springerris.util;
 
 import com.github.springerris.gui.Window;
 import com.github.springerris.gui.WindowContext;
+import com.github.springerris.i18n.I18N;
 import io.github.wasabithumb.yandisk4j.YanDisk;
 import io.github.wasabithumb.yandisk4j.auth.AuthHandler;
 import io.github.wasabithumb.yandisk4j.auth.AuthResponse;
@@ -49,7 +50,7 @@ public class YanHandler {
 
     public void upload() {
         YanDisk yd = YanDisk.yanDisk(this.getToken());
-        String zipName = JOptionPane.showInputDialog("Введите название файла для архива");
+        String zipName = JOptionPane.showInputDialog(I18N.SEND_YANDEX_PICK_NAME.get());
         if (zipName.isBlank()) {
             // TODO: something will go here
             return;
@@ -57,14 +58,14 @@ public class YanHandler {
 
         String password = "";
         int isProtected = JOptionPane.showConfirmDialog(this.window,
-                "Добавить пароль для доступа к архиву?",
-                "Выбор пароля",
+                I18N.STAGE_PASSWORD_PROMPT_CONFIRM.get(),
+                I18N.STAGE_PASSWORD_PROMPT_TITLE.get(),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
         );
         if (isProtected == JOptionPane.YES_OPTION) {
             while (password.isBlank()) {
-                password = JOptionPane.showInputDialog("Введите пароль для архива:");
+                password = JOptionPane.showInputDialog(I18N.STAGE_PASSWORD_PROMPT_ENTER.get());
             }
         }
 

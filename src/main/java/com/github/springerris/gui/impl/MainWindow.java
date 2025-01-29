@@ -2,6 +2,7 @@ package com.github.springerris.gui.impl;
 
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.GridBagWindow;
+import com.github.springerris.i18n.I18N;
 import com.github.springerris.util.Listeners;
 import io.github.wasabithumb.magma4j.Magma;
 
@@ -42,7 +43,7 @@ public class MainWindow extends GridBagWindow {
     private boolean atRoot = true;
 
     public MainWindow(WindowContext ctx) {
-        super(ctx, "Главное окно", 800, 500);
+        super(ctx, I18N.WINDOW_MAIN_TITLE.get(), 800, 500);
     }
 
     @Override
@@ -51,14 +52,14 @@ public class MainWindow extends GridBagWindow {
         files = new DefaultListModel<>();
         files.add(0, "AAA");
         currentFiles = new ArrayList<>();
-        buttonAddFile = new JButton("<html>Добавить <br>файл в архив</html>");
-        buttonWriteZip = new JButton("<html>Записать<br> архив</html>");
-        buttonMoveUp = new JButton("На уровень выше ..");
-        buttonAddDir = new JButton("<html>Добавить папку<br> с файлами в архив</html>");
+        buttonAddFile = new JButton(I18N.WINDOW_MAIN_BUTTON_ADD_FILE.get());
+        buttonWriteZip = new JButton(I18N.WINDOW_MAIN_BUTTON_WRITE_ZIP.get());
+        buttonMoveUp = new JButton(I18N.WINDOW_MAIN_BUTTON_ASCEND.get());
+        buttonAddDir = new JButton(I18N.WINDOW_MAIN_BUTTON_ADD_DIR.get());
         buttonMoveUp.setIcon(UIManager.getIcon("FileChooser.upFolderIcon"));
         buttonAddDir.setIcon(UIManager.getIcon("FileChooser.newFolderIcon"));
         buttonAddFile.setIcon(UIManager.getIcon("FileView.fileIcon"));
-        buttonChoose = new JButton("<html>Отправить <br> архив в..       </html>");
+        buttonChoose = new JButton(I18N.WINDOW_MAIN_BUTTON_SEND.get());
         buttonWriteZip.setIcon(UIManager.getIcon("FileView.hardDriveIcon"));
         buttonChoose.setIcon(UIManager.getIcon("FileView.computerIcon"));
         buttonListHead = new JButton("DEBUG HEAD");
@@ -140,7 +141,7 @@ public class MainWindow extends GridBagWindow {
 
             System.out.println(file);
             if (!ctx.zipper().add(file)) {
-                showError("Не удалось добавить файл");
+                showError(I18N.WINDOW_MAIN_ERROR_ADD_FILE.get());
             }
             //zipfile.zipFile(dirRoot, zipfile.filename, zipfile.zipStream);
             ctx.zipper().printFiles();
@@ -158,7 +159,7 @@ public class MainWindow extends GridBagWindow {
 
             System.out.println(dirRoot);
             if (!ctx.zipper().add(dirRoot)) {
-                showError("Не удалось добавить папку");
+                showError(I18N.WINDOW_MAIN_ERROR_ADD_DIR.get());
             } else if (atRoot) {
                 currentFiles.add(dirRoot);
             }
@@ -202,16 +203,22 @@ public class MainWindow extends GridBagWindow {
     }
 
     private ZipOutputStream createZipStream(OutputStream os) {
-        int isProtected = JOptionPane.showConfirmDialog(this,
-                "Добавить пароль для доступа к архиву?",
-                "Выбор пароля",
+        int isProtected = JOptionPane.showConfirmDialog(
+                this,
+                I18N.STAGE_PASSWORD_PROMPT_CONFIRM.get(),
+                I18N.STAGE_PASSWORD_PROMPT_TITLE.get(),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
         );
         if (isProtected == JOptionPane.YES_OPTION) {
             String password;
             do {
-                password = JOptionPane.showInputDialog(this, "Введите пароль для архива");
+                password = JOptionPane.showInputDialog(
+                        this,
+                        I18N.STAGE_PASSWORD_PROMPT_ENTER.get(),
+                        I18N.STAGE_PASSWORD_PROMPT_TITLE.get(),
+                        JOptionPane.QUESTION_MESSAGE
+                );
             } while (password.isEmpty());
             byte[] key = Magma.generateKeyFromPassword(password);
             os = Magma.newOutputStream(os, key);

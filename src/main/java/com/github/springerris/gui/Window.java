@@ -1,5 +1,7 @@
 package com.github.springerris.gui;
 
+import com.github.springerris.i18n.I18N;
+
 import javax.swing.*;
 import java.lang.reflect.Constructor;
 import java.util.logging.Level;
@@ -32,7 +34,7 @@ public abstract class Window extends JFrame {
         JOptionPane.showMessageDialog(
                 this,
                 message,
-                "Ошибка",
+                I18N.POPUP_ERROR.get(),
                 JOptionPane.ERROR_MESSAGE
         );
     }
@@ -41,7 +43,7 @@ public abstract class Window extends JFrame {
         JOptionPane.showMessageDialog(
                 this,
                 message,
-                "Информация",
+                I18N.POPUP_INFO.get(),
                 JOptionPane.INFORMATION_MESSAGE
         );
     }
