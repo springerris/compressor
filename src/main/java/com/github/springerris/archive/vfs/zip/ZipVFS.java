@@ -1,5 +1,6 @@
 package com.github.springerris.archive.vfs.zip;
 
+import com.github.springerris.archive.vfs.AbstractVFS;
 import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
 import io.github.wasabithumb.magma4j.Magma;
@@ -10,7 +11,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class ZipVFS implements VFS {
+public class ZipVFS extends AbstractVFS implements VFSEntity {
 
     private final File file;
     private final String prefix;
@@ -49,9 +50,19 @@ public class ZipVFS implements VFS {
     }
 
     private ZipEntry getEntry(ZipInputStream zis, String name) throws IOException {
+        int len = name.length();
         ZipEntry ze;
+        String zeName;
+        int zeNameLen;
+
         while ((ze = zis.getNextEntry()) != null) {
-            if (ze.getName().equals(name)) return ze;
+            zeName = ze.getName();
+            zeNameLen = zeName.length();
+            if (zeNameLen == len) {
+                if (zeName.equals(name)) return ze;
+            } else if (zeNameLen == (len + 1)) {
+                if (zeName.startsWith(name) && zeName.charAt(zeNameLen - 1) == '/') return ze;
+            }
         }
         return null;
     }
@@ -76,7 +87,7 @@ public class ZipVFS implements VFS {
             while ((ze = zis.getNextEntry()) != null) {
                 Matcher m = p.matcher(ze.getName());
                 if (!m.matches()) continue;
-                String name = m.group(0);
+                String name = m.group(1);
 
                 if (len == capacity) {
                     int newCapacity = (int) Math.ceil((capacity + 1) / 0.75d);
@@ -99,6 +110,7 @@ public class ZipVFS implements VFS {
 
     @Override
     public VFSEntity stat(String name) {
+        if (name.isEmpty()) return this;
         VFSEntity ret = this.stat0(name);
         if (ret == null) throw new AssertionError("Failed to stat \"" + name + "\"");
         return ret;
@@ -173,6 +185,31 @@ public class ZipVFS implements VFS {
     @Override
     public void mount(String localPath, String remotePath, VFS remote) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Cannot mount in ZipVFS");
+    }
+
+    //
+
+    @Override
+    public String name() {
+        String name = this.file.getName();
+        int whereExt = name.lastIndexOf('.');
+        if (whereExt == -1) return name;
+        return name.substring(0, whereExt);
+    }
+
+    @Override
+    public boolean isFile() {
+        return false;
+    }
+
+    @Override
+    public boolean isDirectory() {
+        return true;
+    }
+
+    @Override
+    public long size() {
+        return 0L;
     }
 
 }
