@@ -106,7 +106,7 @@ public class MainWindow extends BorderWindow {
     }
 
     private void onClickExport(ActionEvent ignored) {
-        this.transfer(ExportChoiceWindow.class);
+        this.transfer(ExportWindow.class);
     }
 
     private void onClickImport(ActionEvent ignored) {

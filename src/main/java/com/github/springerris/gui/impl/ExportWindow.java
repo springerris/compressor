@@ -16,9 +16,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.logging.Level;
 
-public class ExportChoiceWindow extends ChoiceWindow {
+public class ExportWindow extends ChoiceWindow {
 
-    public ExportChoiceWindow(WindowContext ctx) {
+    public ExportWindow(WindowContext ctx) {
         super(ctx, I18N.WINDOW_EXPORT_TITLE.get(), 300, 200);
     }
 
