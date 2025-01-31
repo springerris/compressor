@@ -1,0 +1,210 @@
+package com.github.springerris.archive;
+
+import com.github.springerris.archive.vfs.VFS;
+import com.github.springerris.archive.vfs.VFSEntity;
+import io.github.wasabithumb.magma4j.Magma;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.function.Supplier;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+/**
+ * Handles compressing, encrypting, decrypting and decompressing path sets.
+ */
+public final class Archive {
+
+    /**
+     * Takes in a file previously created by an Archiver and restores it.
+     * @param file A zip file or encrypted zip file
+     * @param password A method which is called when the file is encrypted and must be decrypted
+     * @throws IOException Generic IO exception
+     * @throws IllegalArgumentException File is malformed (missing metadata)
+     * @throws IllegalStateException Password is incorrect
+     */
+    public static Archive read(Path file, Supplier<String> password) throws IOException {
+        byte[] key;
+        boolean isZip;
+        try (InputStream is = Files.newInputStream(file, StandardOpenOption.READ)) {
+            isZip = streamIsZip(is);
+        }
+
+        if (isZip) {
+            key = null;
+        } else {
+            key = Magma.generateKeyFromPassword(password.get());
+            try (InputStream is = Files.newInputStream(file, StandardOpenOption.READ);
+                 InputStream mis = Magma.newInputStream(is, key)
+            ) {
+                isZip = streamIsZip(mis);
+            }
+            if (!isZip) throw new IllegalStateException("Encryption password is incorrect");
+        }
+
+        Archive ret = new Archive();
+        VFS zipVFS = VFS.archive(file, key);
+
+        ArchiveRootInfoFile roots = new ArchiveRootInfoFile();
+        try (InputStream is = zipVFS.read(".ROOTS")) {
+            roots.read(is);
+        }
+        ret.roots.addAll(roots.getData());
+
+        for (ArchiveRootInfo root : roots) {
+            ret.files.mount(
+                    root.entry(),
+                    root.entry(),
+                    zipVFS
+            );
+        }
+        return ret;
+    }
+
+    private static final byte[] ZIP_HEADER = new byte[] {
+            (byte) 0x50, (byte) 0x4B, (byte) 0x03, (byte) 0x04
+    };
+
+    private static boolean streamIsZip(InputStream is) throws IOException {
+        int c;
+        for (byte b : ZIP_HEADER) {
+            c = is.read();
+            if (c == -1) return false;
+            if (((byte) c) != b) return false;
+        }
+        return true;
+    }
+
+    //
+
+    private final VFS files;
+    private final SortedSet<ArchiveRootInfo> roots;
+
+    public Archive() {
+        this.files = VFS.empty();
+        this.roots = new TreeSet<>();
+    }
+
+    //
+
+    /**
+     * True if the path or any of its parents are not already contained within the root tree
+     */
+    public boolean canAdd(Path path) {
+        ArchiveRootInfo info = new ArchiveRootInfo(path);
+        if (this.roots.contains(info)) return false;
+
+        Set<ArchiveRootInfo> less = this.roots.headSet(info);
+        if (less.isEmpty()) return true;
+
+        String a = info.entry();
+        for (ArchiveRootInfo possibleParent : less) {
+            String b = possibleParent.entry();
+            boolean conflicts = possibleParent.isDirectory() ?
+                    a.startsWith(b) :
+                    a.equals(b);
+            if (conflicts) return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Adds a filesystem path to include in the archive
+     */
+    public void add(Path path) {
+        if (!this.canAdd(path))
+            throw new IllegalArgumentException("Cannot add path \"" + path.toAbsolutePath() + "\", violates hierarchy");
+
+        ArchiveRootInfo info = new ArchiveRootInfo(path);
+        if (info.isDirectory()) {
+            this.files.mount(info.entry(), "", VFS.directory(path));
+        } else {
+            this.files.mount(info.entry(), path.getFileName().toString(), VFS.directory(path.getParent()));
+        }
+
+        this.roots.add(info);
+    }
+
+    /**
+     * Writes the archive data to the specified stream.
+     * @param os Destination for the archive data
+     * @param password If not null, data will be encrypted with this password
+     */
+    public void write(OutputStream os, String password) throws IOException {
+        boolean close = false;
+        if (password != null) {
+            byte[] key = Magma.generateKeyFromPassword(password);
+            os = Magma.newOutputStream(os, key);
+            close = true;
+        }
+        try {
+            try (ZipOutputStream zos = new ZipOutputStream(os)) {
+                this.write(zos);
+                zos.flush();
+            }
+        } finally {
+            if (close) os.close();
+        }
+    }
+
+    private void write(ZipOutputStream zos) throws IOException {
+        this.writeMetadata(zos);
+        this.writeTree(zos, this.files, "");
+    }
+
+    private void writeMetadata(ZipOutputStream zos) throws IOException {
+        ZipEntry ze = new ZipEntry(".ROOTS");
+        zos.putNextEntry(ze);
+
+        ArchiveRootInfoFile file = new ArchiveRootInfoFile();
+        file.setData(this.roots);
+        file.write(zos);
+
+        zos.closeEntry();
+    }
+
+    private void writeTree(ZipOutputStream zos, VFS root, String prefix) throws IOException {
+        StringBuilder name = new StringBuilder(prefix);
+
+        for (VFSEntity ent : root.list()) {
+            name.setLength(prefix.length());
+            name.append(ent.name());
+
+            if (ent.isDirectory()) {
+                name.append('/');
+                String nameS = name.toString();
+
+                ZipEntry ze = new ZipEntry(nameS);
+                ze.setMethod(ZipEntry.STORED);
+                ze.setSize(0L);
+                ze.setCrc(0L);
+                zos.putNextEntry(ze);
+
+                this.writeTree(zos, root.sub(ent.name()), nameS);
+                continue;
+            } else if (!ent.isFile()) {
+                continue;
+            }
+
+            ZipEntry ze = new ZipEntry(name.toString());
+            zos.putNextEntry(ze);
+
+            try (InputStream is = root.read(ent.name())) {
+                byte[] buf = new byte[8192];
+                int read;
+                while ((read = is.read(buf)) != -1) {
+                    zos.write(buf, 0, read);
+                }
+            }
+        }
+    }
+
+}

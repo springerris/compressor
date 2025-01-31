@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class YanHandler {
