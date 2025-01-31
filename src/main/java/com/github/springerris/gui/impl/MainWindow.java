@@ -70,7 +70,7 @@ public class MainWindow extends BorderWindow {
         }
 
         if (!this.ctx.archive().canAdd(p)) {
-            showError("Cannot add this path as it conflicts with the current hierarchy");
+            showError(I18N.WINDOW_MAIN_ERROR_ADD_FILE.get());
             return;
         }
 
@@ -106,7 +106,7 @@ public class MainWindow extends BorderWindow {
     }
 
     private void onClickExport(ActionEvent ignored) {
-        this.transfer(UploadChoiceWindow.class);
+        this.transfer(ExportChoiceWindow.class);
     }
 
     private void onClickImport(ActionEvent ignored) {
@@ -170,21 +170,21 @@ public class MainWindow extends BorderWindow {
         tools.setFloatable(false);
         tools.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-        JButton b1 = new JButton("Add");
+        JButton b1 = new JButton(I18N.WINDOW_MAIN_BUTTON_ADD.get());
         b1.setIcon(UIManager.getIcon("FileView.fileIcon"));
         b1.addActionListener(this::onClickAdd);
         tools.add(b1);
 
-        JButton b2 = new JButton("Import");
+        JButton b2 = new JButton(I18N.WINDOW_MAIN_BUTTON_IMPORT.get());
         b2.setIcon(UIManager.getIcon("FileChooser.directoryIcon"));
         tools.add(b2);
 
-        JButton b3 = new JButton("Export");
+        JButton b3 = new JButton(I18N.WINDOW_MAIN_BUTTON_EXPORT.get());
         b3.setIcon(UIManager.getIcon("FileView.floppyDriveIcon"));
         b3.addActionListener(this::onClickExport);
         tools.add(b3);
 
-        JButton b4 = new JButton("Sync");
+        JButton b4 = new JButton(I18N.WINDOW_MAIN_BUTTON_SYNC.get());
         b4.setIcon(UIManager.getIcon("FileChooser.hardDriveIcon"));
         b4.addActionListener(this::onClickSync);
         tools.add(b4);

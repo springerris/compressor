@@ -34,34 +34,24 @@ public final class I18N {
             .ru("Главное окно")
             .build();
 
-    public static final LangString WINDOW_MAIN_BUTTON_ADD_FILE = builder()
-            .en("Add file to archive")
-            .ru("<html>Добавить <br>файл в архив</html>")
+    public static final LangString WINDOW_MAIN_BUTTON_ADD = builder()
+            .en("Add")
+            .ru("Добавить файл в архив") // TODO: Abbreviate
             .build();
 
-    public static final LangString WINDOW_MAIN_BUTTON_WRITE_ZIP = builder()
-            .en("Write archive")
-            .ru("<html>Записать<br> архив</html>")
+    public static final LangString WINDOW_MAIN_BUTTON_IMPORT = builder()
+            .en("Import")
+            // TODO: ru
             .build();
 
-    public static final LangString WINDOW_MAIN_BUTTON_ASCEND = builder()
-            .en("Move Up ..")
-            .ru("На уровень выше ..")
+    public static final LangString WINDOW_MAIN_BUTTON_EXPORT = builder()
+            .en("Export")
+            .ru("Отправить архив в..") // TODO: Abbreviate
             .build();
 
-    public static final LangString WINDOW_MAIN_BUTTON_ADD_DIR = builder()
-            .en("Add directory to archive")
-            .ru("<html>Добавить папку<br> с файлами в архив</html>")
-            .build();
-
-    public static final LangString WINDOW_MAIN_BUTTON_SEND = builder()
-            .en("Send archive")
-            .ru("<html>Отправить <br> архив в..       </html>")
-            .build();
-
-    public static final LangString WINDOW_MAIN_BUTTON_EXTRACT_ZIP = builder()
-            .en("Extract Archive")
-            .ru("<html>Распаковать<br>архив</html>")
+    public static final LangString WINDOW_MAIN_BUTTON_SYNC = builder()
+            .en("Sync")
+            .ru("Распаковать архив") // TODO: Abbreviate
             .build();
 
     public static final LangString WINDOW_MAIN_ERROR_ADD_FILE = builder()
@@ -69,22 +59,32 @@ public final class I18N {
             .ru("Не удалось добавить файл")
             .build();
 
-    public static final LangString WINDOW_MAIN_ERROR_ADD_DIR = builder()
-            .en("Failed to add directory (violates hierarchy)")
-            .ru("Не удалось добавить папку")
-            .build();
-
-    public static final LangString WINDOW_UPLOAD_TITLE = builder()
+    public static final LangString WINDOW_EXPORT_TITLE = builder()
             .en("Select a Service")
             .ru("Выбрать сервис")
             .build();
 
-    public static final LangString WINDOW_UPLOAD_OPTION_YANDEX = builder()
+    public static final LangString WINDOW_EXPORT_OPTION_ZIP = builder()
+            .en("Export as ZIP")
+            .ru("Записать архив")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_OPTION_ZIP_TYPE_BASIC = builder()
+            .en("ZIP")
+            .ru("ZIP")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_OPTION_ZIP_TYPE_ENCRYPTED = builder()
+            .en("Encrypted ZIP")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_EXPORT_OPTION_YANDEX = builder()
             .en("Upload to Yandex Disk")
             .ru("Отправить на Yandex Disk")
             .build();
 
-    public static final LangString WINDOW_UPLOAD_OPTION_DRIVE = builder()
+    public static final LangString WINDOW_EXPORT_OPTION_DRIVE = builder()
             .en("Upload to Google Drive")
             .ru("Отправить на Google Drive")
             .build();
@@ -104,7 +104,7 @@ public final class I18N {
             .ru("Введите пароль для архива")
             .build();
 
-    public static final LangString SEND_YANDEX_PICK_NAME = builder()
+    public static final LangString SEND_PICK_NAME = builder()
             .en("Enter a file name for the archive")
             .ru("Введите название файла для архива")
             .build();

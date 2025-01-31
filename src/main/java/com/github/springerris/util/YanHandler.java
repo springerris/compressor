@@ -47,32 +47,16 @@ public class YanHandler {
 
     }
 
-    public void upload() {
+    public void upload(String password) {
         YanDisk yd = YanDisk.yanDisk(this.getToken());
-        String zipName = JOptionPane.showInputDialog(I18N.SEND_YANDEX_PICK_NAME.get());
+        String zipName = JOptionPane.showInputDialog(I18N.SEND_PICK_NAME.get());
         if (zipName.isBlank()) {
             // TODO: something will go here
             return;
         }
 
-        String password = "";
-        int isProtected = JOptionPane.showConfirmDialog(this.window,
-                I18N.STAGE_PASSWORD_PROMPT_CONFIRM.get(),
-                I18N.STAGE_PASSWORD_PROMPT_TITLE.get(),
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-        );
-        if (isProtected == JOptionPane.YES_OPTION) {
-            while (password.isBlank()) {
-                password = JOptionPane.showInputDialog(I18N.STAGE_PASSWORD_PROMPT_ENTER.get());
-            }
-        }
-
         NodeUploader nu = yd.upload("disk:/" + zipName + ".zip");
         try (OutputStream os = nu.open()) {
-            if (!password.isBlank()) {
-                System.out.println("OOPS! no encryption");
-            }
             this.ctx.archive().write(os, password);
         } catch (IOException ex) {
             this.ctx.logger().log(Level.SEVERE, "Ошибка работы с сервисом Yandex Disk", ex);
