@@ -22,7 +22,7 @@ import java.util.logging.Level;
 
 public class MainWindow extends BorderWindow {
 
-    private String path = "";
+    private String path;
     private JTextField pathField;
     private DefaultListModel<VFSEntity> entries;
     private VFSEntityList entriesList;
@@ -161,8 +161,11 @@ public class MainWindow extends BorderWindow {
         JScrollPane entriesPane = new JScrollPane(entriesList);
 
         this.addElement(entriesPane);
+
+        this.path = "";
         this.entries = entriesModel;
         this.entriesList = entriesList;
+        this.updateEntries();
     }
 
     protected void setupTools(Container header) {
