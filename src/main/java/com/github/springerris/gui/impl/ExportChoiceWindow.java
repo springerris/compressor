@@ -40,6 +40,7 @@ public class ExportChoiceWindow extends ChoiceWindow {
             case 1 -> this.onClickChoice1();
             case 2 -> this.onClickChoice2();
         }
+        this.transfer(MainWindow.class);
     }
 
     //

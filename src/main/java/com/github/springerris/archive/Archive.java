@@ -99,11 +99,6 @@ public final class Archive {
         return this.files;
     }
 
-    @Deprecated
-    public void debug() {
-        System.out.println(this.files);
-    }
-
     /**
      * True if the path or any of its parents are not already contained within the root tree
      */
@@ -216,6 +211,10 @@ public final class Archive {
                 }
             }
         }
+    }
+
+    public void extract() throws IOException {
+        // TODO
     }
 
 }
