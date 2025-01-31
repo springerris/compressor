@@ -1,249 +1,212 @@
 package com.github.springerris.gui.impl;
 
+import com.github.springerris.archive.vfs.VFS;
+import com.github.springerris.archive.vfs.VFSEntity;
 import com.github.springerris.gui.WindowContext;
-import com.github.springerris.gui.helper.GridBagWindow;
+import com.github.springerris.gui.component.VFSEntityList;
+import com.github.springerris.gui.helper.BorderWindow;
 import com.github.springerris.i18n.I18N;
 import com.github.springerris.util.Listeners;
-import io.github.wasabithumb.magma4j.Magma;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.logging.Level;
-import java.util.zip.ZipOutputStream;
 
-import static java.awt.GridBagConstraints.*;
-import static javax.swing.JFileChooser.APPROVE_OPTION;
+public class MainWindow extends BorderWindow {
 
-@SuppressWarnings("FieldCanBeLocal")
-public class MainWindow extends GridBagWindow {
-
-    private JButton buttonChoose;
-    private JButton buttonAddFile;
-    private JButton buttonAddDir;
-    private JButton buttonListHead;
-    private JButton buttonMoveUp;
-    private JButton buttonWriteZip;
-    private JButton buttonExtractZip;
-    private JList<String> fileList;
-    private DefaultListModel<String> files;
-    private List<File> currentFiles;
-    private boolean atRoot = true;
+    private String path = "";
+    private JTextField pathField;
+    private DefaultListModel<VFSEntity> entries;
+    private VFSEntityList entriesList;
 
     public MainWindow(WindowContext ctx) {
         super(ctx, I18N.WINDOW_MAIN_TITLE.get(), 800, 500);
     }
 
-    @Override
-    protected void setupContent() {
-        JPanel buttonPane = new JPanel();
-        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+    //
 
-        Border padding = new EmptyBorder(8, 8, 8, 8);
+    private void onClickEntry(MouseEvent e) {
+        if (e.getClickCount() < 2) return;
 
-        buttonPane.setBorder(padding);
-        files = new DefaultListModel<>();
-        files.add(0, "AAA");
-        currentFiles = new ArrayList<>();
-        buttonAddFile = new JButton(I18N.WINDOW_MAIN_BUTTON_ADD_FILE.get());
-        buttonWriteZip = new JButton(I18N.WINDOW_MAIN_BUTTON_WRITE_ZIP.get());
-        buttonExtractZip = new JButton(I18N.WINDOW_MAIN_BUTTON_EXTRACT_ZIP.get());
-        buttonMoveUp = new JButton(I18N.WINDOW_MAIN_BUTTON_ASCEND.get());
-        buttonAddDir = new JButton(I18N.WINDOW_MAIN_BUTTON_ADD_DIR.get());
+        VFSEntity selected = this.entriesList.getSelectedValue();
+        if (selected == null) return;
+        if (!selected.isDirectory()) return;
 
-        buttonMoveUp.setIcon(UIManager.getIcon("FileChooser.upFolderIcon"));
-        buttonAddDir.setIcon(UIManager.getIcon("FileChooser.newFolderIcon"));
-        buttonAddFile.setIcon(UIManager.getIcon("FileView.fileIcon"));
-        buttonChoose = new JButton(I18N.WINDOW_MAIN_BUTTON_SEND.get());
-        buttonWriteZip.setIcon(UIManager.getIcon("FileView.hardDriveIcon"));
-        buttonExtractZip.setIcon(UIManager.getIcon("FileView.hardDriveIcon"));
-        buttonChoose.setIcon(UIManager.getIcon("FileView.computerIcon"));
-        buttonListHead = new JButton("DEBUG HEAD");
-        buttonListHead.addActionListener((ActionEvent a) -> {
-            ctx.zipper().printFiles();
-        });
-        fileList = new JList<>(files);
-
-        buttonMoveUp.setBorder(padding);
-
-        fileList.addMouseListener(Listeners.mouseClicked(this::onClickFileList));
-        buttonMoveUp.addActionListener(this::onClickMoveUp);
-        buttonAddFile.addActionListener(this::onClickAddFile);
-        buttonAddDir.addActionListener(this::onClickAddDir);
-        buttonWriteZip.addActionListener(this::onClickWriteZip);
-        buttonExtractZip.addActionListener(this::onClickExtractZip);
-        buttonChoose.addActionListener(this::onClickChoose);
-
-        this.addElement(0,0,4,1,buttonPane,HORIZONTAL);
-        buttonPane.add(buttonAddDir);
-        buttonPane.add(buttonAddFile);
-        buttonPane.add(buttonWriteZip);
-        buttonPane.add(buttonExtractZip);
-        buttonPane.add(buttonChoose);
-        JScrollPane sp = new JScrollPane(fileList);
-        this.addElement(0, 1, 1, 1, buttonMoveUp, HORIZONTAL);
-        this.addElement(1, 1, 3, 1, Box.createRigidArea(new Dimension(this.getWidth()/10*9-10, 0)), HORIZONTAL);
-        this.addElement(0, 2, 4, 8, sp, BOTH);
-    }
-
-    private void onClickExtractZip(ActionEvent actionEvent) {
-
-    }
-
-    private void onClickFileList(MouseEvent e) {
-        // \/ Double click, silly \/
-        // TODO: is this a mistake? why would we ignore a click count of 1? should it be < instead of <=?
-        if (e.getClickCount() <= 1) return;
-        System.out.println("DOUBLE CLICK!");
-        for (File f : currentFiles) {
-            if (!Objects.equals(fileList.getSelectedValue(), f.getName())) continue;
-            if (!f.isDirectory()) break;
-            File[] list = f.listFiles();
-            if (list == null) throw new AssertionError("Directory listing for " + f + " is null");
-            atRoot = false;
-            currentFiles = List.of(list);
-
-            System.out.println(f);
-            break;
+        String newPath = this.path;
+        if (newPath.isEmpty()) {
+            newPath = selected.name();
+        } else if (newPath.charAt(newPath.length() - 1) == '/') {
+            newPath += selected.name();
+        } else {
+            newPath += "/" + selected.name();
         }
-        updateList();
+        if (!this.ctx.archive().files().exists(newPath)) return;
+
+        this.setPath(newPath);
     }
 
-    private void onClickMoveUp(ActionEvent e) {
-        if (!atRoot) {
-            File parentF = currentFiles.getFirst().getParentFile();
-            System.out.println(parentF.getAbsolutePath());
-            //boolean hitRoot = true;
-            int i = 0;
-            int maxRoot = ctx.zipper().getSelected().size();
-            for (Path p : ctx.zipper().getSelected()) {
-                System.out.println("HEAD: " + p.toAbsolutePath());
-            }
-            if (ctx.zipper().getSelected().contains(parentF.toPath())) {
-                atRoot = true;
-                List<File> files = new ArrayList<>();
-                for (Path p : ctx.zipper().getSelected()) {
-                    files.add(p.toFile());
-                }
-                currentFiles = files;
-            } else {
-                currentFiles = Arrays.asList(Objects.requireNonNull(parentF.getParentFile().listFiles()));
-            }
-            updateList(currentFiles);
-        }
-    }
-
-    private void onClickAddFile(ActionEvent e) {
+    private void onClickAdd(ActionEvent ignored) {
         JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        j.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        j.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 
         int r = j.showOpenDialog(null);
-        if (r == APPROVE_OPTION) {
-            File file = j.getSelectedFile();
+        if (r != JFileChooser.APPROVE_OPTION) return;
 
-            System.out.println(file);
-            if (!ctx.zipper().add(file)) {
-                showError(I18N.WINDOW_MAIN_ERROR_ADD_FILE.get());
-            }
-            //zipfile.zipFile(dirRoot, zipfile.filename, zipfile.zipStream);
-            ctx.zipper().printFiles();
-            updateList();
+        Path p = j.getSelectedFile().toPath();
+        if (!Files.exists(p)) {
+            // Weird hack that sometimes gets us to the intended directory
+            int count = p.getNameCount();
+            if (count > 1 && p.getName(count - 1).equals(p.getName(count - 2)))
+                p = p.getParent();
+            if (!Files.exists(p)) return;
         }
+
+        if (!this.ctx.archive().canAdd(p)) {
+            showError("Cannot add this path as it conflicts with the current hierarchy");
+            return;
+        }
+
+        this.ctx.archive().add(p);
+        this.updateEntries();
     }
 
-    private void onClickAddDir(ActionEvent e) {
-        JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        j.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-        int r = j.showOpenDialog(null);
-        if (r == APPROVE_OPTION) {
-            File dirRoot = Paths.get(j.getCurrentDirectory().getAbsolutePath(), j.getSelectedFile().getName()).toFile();
-
-            System.out.println(dirRoot);
-            if (!ctx.zipper().add(dirRoot)) {
-                showError(I18N.WINDOW_MAIN_ERROR_ADD_DIR.get());
-            } else if (atRoot) {
-                currentFiles.add(dirRoot);
-            }
-            // zipfile.zipFile(dirRoot, zipfile.filename, zipfile.zipStream);
-            ctx.zipper().printFiles();
-            updateList();
+    private void onClickUp(ActionEvent ignored) {
+        int len = this.path.length();
+        if (len < 2) {
+            this.setPath("");
+            return;
         }
+
+        int whereSlash = this.path.lastIndexOf('/');
+        if (whereSlash == (len - 1)) whereSlash = this.path.lastIndexOf('/', len - 2);
+        if (whereSlash == -1) {
+            this.setPath("");
+            return;
+        }
+
+        this.setPath(this.path.substring(0, whereSlash));
     }
 
-    private void onClickWriteZip(ActionEvent e) {
-        JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        j.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-        int r = j.showSaveDialog(this);
-        if (r != APPROVE_OPTION) return;
-
-        File file = j.getSelectedFile();
-        try (FileOutputStream fos = new FileOutputStream(file, false);
-             ZipOutputStream zos = createZipStream(fos)
-        ) {
-            this.ctx.zipper().write(zos);
-        } catch (IOException e1) {
-            this.reportIOException(e1);
+    private void onUpdatePath(KeyEvent ignored) {
+        String desired = this.pathField.getText();
+        if (desired.isEmpty()) {
+            this.setPath("");
+            return;
         }
+        if (!this.ctx.archive().files().exists(desired)) return;
+        this.setPath(desired);
     }
 
-    private void onClickChoose(ActionEvent e) {
+    private void onClickExport(ActionEvent ignored) {
         this.transfer(UploadChoiceWindow.class);
     }
 
-    private void updateList() {
-        this.fileList.removeAll();
-        this.updateList(this.currentFiles);
+    private void onClickImport(ActionEvent ignored) {
+        // TODO
     }
 
-    private void updateList(List<File> files) {
-        this.files.removeAllElements();
-        for (int i=0; i < files.size(); i++) {
-            this.files.add(i, files.get(i).getName());
+    private void onClickSync(ActionEvent ignored) {
+        // TODO
+    }
+
+    //
+
+    private void setPath(String path) {
+        this.path = path;
+        this.pathField.setText(path);
+        this.updateEntries();
+    }
+
+    private void updateEntries() {
+        VFS root = this.ctx.archive().files();
+        if (!this.path.isEmpty()) root = root.sub(this.path);
+
+        this.entries.clear();
+
+        VFSEntity[] list;
+        try {
+            list = root.list();
+        } catch (IOException e) {
+            this.ctx.logger().log(Level.SEVERE, "Unexpected IO exception", e);
+            return;
+        }
+        Arrays.sort(list);
+
+        for (VFSEntity ent : list) {
+            this.entries.addElement(ent);
         }
     }
 
-    private ZipOutputStream createZipStream(OutputStream os) {
-        int isProtected = JOptionPane.showConfirmDialog(
-                this,
-                I18N.STAGE_PASSWORD_PROMPT_CONFIRM.get(),
-                I18N.STAGE_PASSWORD_PROMPT_TITLE.get(),
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-        );
-        if (isProtected == JOptionPane.YES_OPTION) {
-            String password;
-            do {
-                password = JOptionPane.showInputDialog(
-                        this,
-                        I18N.STAGE_PASSWORD_PROMPT_ENTER.get(),
-                        I18N.STAGE_PASSWORD_PROMPT_TITLE.get(),
-                        JOptionPane.QUESTION_MESSAGE
-                );
-            } while (password.isEmpty());
-            byte[] key = Magma.generateKeyFromPassword(password);
-            os = Magma.newOutputStream(os, key);
-        }
-        return new ZipOutputStream(os);
+    //
+
+    @Override
+    protected void setupContent() {
+        JPanel header = new JPanel();
+        header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
+        this.setupTools(header);
+        this.setupBanner(header);
+        this.addElement(header, BorderLayout.PAGE_START);
+
+        DefaultListModel<VFSEntity> entriesModel = new DefaultListModel<>();
+        VFSEntityList entriesList = new VFSEntityList(entriesModel);
+        entriesList.addMouseListener(Listeners.mouseClicked(this::onClickEntry));
+        JScrollPane entriesPane = new JScrollPane(entriesList);
+
+        this.addElement(entriesPane);
+        this.entries = entriesModel;
+        this.entriesList = entriesList;
     }
 
-    private void reportIOException(IOException e) {
-        this.ctx.logger().log(Level.WARNING, "Unexpected IO exception", e);
+    protected void setupTools(Container header) {
+        JToolBar tools = new JToolBar();
+        tools.setFloatable(false);
+        tools.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        JButton b1 = new JButton("Add");
+        b1.setIcon(UIManager.getIcon("FileView.fileIcon"));
+        b1.addActionListener(this::onClickAdd);
+        tools.add(b1);
+
+        JButton b2 = new JButton("Import");
+        b2.setIcon(UIManager.getIcon("FileChooser.directoryIcon"));
+        tools.add(b2);
+
+        JButton b3 = new JButton("Export");
+        b3.setIcon(UIManager.getIcon("FileView.floppyDriveIcon"));
+        b3.addActionListener(this::onClickExport);
+        tools.add(b3);
+
+        JButton b4 = new JButton("Sync");
+        b4.setIcon(UIManager.getIcon("FileChooser.hardDriveIcon"));
+        b4.addActionListener(this::onClickSync);
+        tools.add(b4);
+
+        header.add(tools);
+    }
+
+    protected void setupBanner(Container header) {
+        JPanel banner = new JPanel();
+        banner.setLayout(new BorderLayout());
+
+        JButton up = new JButton("..");
+        up.setIcon(UIManager.getIcon("FileChooser.upFolderIcon"));
+        up.addActionListener(this::onClickUp);
+        banner.add(up, BorderLayout.LINE_START);
+
+        JTextField field = new JTextField("");
+        banner.add(field, BorderLayout.CENTER);
+        field.addKeyListener(Listeners.keyReleased(this::onUpdatePath));
+        this.pathField = field;
+
+        header.add(banner);
     }
 
 }

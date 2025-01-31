@@ -25,14 +25,14 @@ public interface VFS {
         return new FilesystemVFS(path);
     }
 
-    static VFS archive(Path path, byte[] key) {
+    static VFS zip(Path path, byte[] key) {
         if (!Files.isRegularFile(path))
             throw new IllegalArgumentException("Path \"" + path.toAbsolutePath() + "\" is not a file");
         return new ZipVFS(path.toFile(), key);
     }
 
-    static VFS archive(Path path) {
-        return archive(path, null);
+    static VFS zip(Path path) {
+        return zip(path, null);
     }
 
     //

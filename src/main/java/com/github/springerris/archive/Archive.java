@@ -24,11 +24,12 @@ public final class Archive {
 
     /**
      * Takes in a file previously created by an Archiver and restores it.
-     * @param file A zip file or encrypted zip file
+     *
+     * @param file     A zip file or encrypted zip file
      * @param password A method which is called when the file is encrypted and must be decrypted
-     * @throws IOException Generic IO exception
+     * @throws IOException              Generic IO exception
      * @throws IllegalArgumentException File is malformed (missing metadata)
-     * @throws IllegalStateException Password is incorrect
+     * @throws IllegalStateException    Password is incorrect
      */
     public static Archive read(Path file, Supplier<String> password) throws IOException {
         byte[] key;
@@ -50,7 +51,7 @@ public final class Archive {
         }
 
         Archive ret = new Archive();
-        VFS zipVFS = VFS.archive(file, key);
+        VFS zipVFS = VFS.zip(file, key);
 
         ArchiveRootInfoFile roots = new ArchiveRootInfoFile();
         try (InputStream is = zipVFS.read(".ROOTS")) {
@@ -68,7 +69,7 @@ public final class Archive {
         return ret;
     }
 
-    private static final byte[] ZIP_HEADER = new byte[] {
+    private static final byte[] ZIP_HEADER = new byte[]{
             (byte) 0x50, (byte) 0x4B, (byte) 0x03, (byte) 0x04
     };
 
@@ -93,6 +94,15 @@ public final class Archive {
     }
 
     //
+
+    public VFS files() {
+        return this.files;
+    }
+
+    @Deprecated
+    public void debug() {
+        System.out.println(this.files);
+    }
 
     /**
      * True if the path or any of its parents are not already contained within the root tree
@@ -135,7 +145,8 @@ public final class Archive {
 
     /**
      * Writes the archive data to the specified stream.
-     * @param os Destination for the archive data
+     *
+     * @param os       Destination for the archive data
      * @param password If not null, data will be encrypted with this password
      */
     public void write(OutputStream os, String password) throws IOException {

@@ -2,8 +2,11 @@
 
 package com.github.springerris.gui;
 
-import com.github.springerris.util.Zipper;
+import com.github.springerris.archive.Archive;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**
@@ -12,19 +15,22 @@ import java.util.logging.Logger;
 public class WindowContext {
 
     private final Logger logger;
-    private final Zipper zipper;
-    public WindowContext(Logger logger, Zipper zipper) {
+    private Archive archive;
+    public WindowContext(Logger logger, Archive archive) {
         this.logger = logger;
-        this.zipper = zipper;
+        this.archive = archive;
     }
 
     public Logger logger() {
         return this.logger;
     }
 
-    /** Возвращает zipper */
-    public Zipper zipper() {
-        return this.zipper;
+    public Archive archive() {
+        return this.archive;
+    }
+
+    public void loadArchive(Path file, Supplier<String> password) throws IOException {
+        this.archive = Archive.read(file, password);
     }
 
 }

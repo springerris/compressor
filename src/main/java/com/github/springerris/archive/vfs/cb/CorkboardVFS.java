@@ -68,7 +68,8 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
         return this.splitPath(
                 name,
                 this::existsDirect,
-                VFS::exists
+                VFS::exists,
+                Boolean.FALSE
         );
     }
 
@@ -156,7 +157,7 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
 
     //
 
-    private <T> T splitPath(String name, Function<String, T> whenDirect, BiFunction<VFS, String, T> whenMulti) {
+    private <T> T splitPath(String name, Function<String, T> whenDirect, BiFunction<VFS, String, T> whenMulti, T whenNotExists) {
         int whereSlash = name.indexOf('/');
         if (whereSlash == -1) return whenDirect.apply(name);
 
@@ -164,7 +165,12 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
         String post = name.substring(whereSlash + 1);
         if (post.isEmpty()) return whenDirect.apply(pre);
 
+        if (whenNotExists != null && !this.existsDirect(pre)) return whenNotExists;
         return whenMulti.apply(this.subDirect(pre), post);
+    }
+
+    private <T> T splitPath(String name, Function<String, T> whenDirect, BiFunction<VFS, String, T> whenMulti) {
+        return this.splitPath(name, whenDirect, whenMulti, null);
     }
 
     private CorkboardVFSBranch getDirectChild(String name) throws IllegalArgumentException {

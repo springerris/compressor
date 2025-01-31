@@ -14,8 +14,6 @@ import javax.swing.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 public class YanHandler {
 
@@ -71,13 +69,11 @@ public class YanHandler {
         }
 
         NodeUploader nu = yd.upload("disk:/" + zipName + ".zip");
-        try (OutputStream ostr = nu.open();
-             ZipOutputStream zos = new ZipOutputStream(ostr)
-        ) {
+        try (OutputStream os = nu.open()) {
             if (!password.isBlank()) {
                 System.out.println("OOPS! no encryption");
             }
-            this.ctx.zipper().write(zos);
+            this.ctx.archive().write(os, password);
         } catch (IOException ex) {
             this.ctx.logger().log(Level.SEVERE, "Ошибка работы с сервисом Yandex Disk", ex);
             this.window.showError("""
