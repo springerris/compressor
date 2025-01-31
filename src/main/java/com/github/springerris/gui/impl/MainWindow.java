@@ -177,6 +177,7 @@ public class MainWindow extends BorderWindow {
 
         JButton b2 = new JButton(I18N.WINDOW_MAIN_BUTTON_IMPORT.get());
         b2.setIcon(UIManager.getIcon("FileChooser.directoryIcon"));
+        b2.addActionListener(this::onClickImport);
         tools.add(b2);
 
         JButton b3 = new JButton(I18N.WINDOW_MAIN_BUTTON_EXPORT.get());
