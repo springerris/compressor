@@ -139,4 +139,29 @@ public final class I18N {
             .ru("Введите название файла для архива")
             .build();
 
+    public static final LangString OP_WRITE_NEW_FILE = builder()
+            .en("Write new file")
+            // TODO: ru
+            .build();
+
+    public static final LangString OP_OVERWRITE_FILE = builder()
+            .en("Overwrite file")
+            // TODO: ru
+            .build();
+
+    public static final LangString OP_CREATE_DIR = builder()
+            .en("Create directory")
+            // TODO: ru
+            .build();
+
+    public static final LangString OP_DELETE_FILE = builder()
+            .en("Delete file")
+            // TODO: ru
+            .build();
+
+    public static final LangString OP_DELETE_DIR = builder()
+            .en("Delete directory")
+            // TODO: ru
+            .build();
+
 }

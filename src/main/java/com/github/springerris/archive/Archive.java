@@ -2,6 +2,8 @@ package com.github.springerris.archive;
 
 import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
+import com.github.springerris.op.DiskOperation;
+import com.github.springerris.op.DiskOperationQueue;
 import io.github.wasabithumb.magma4j.Magma;
 
 import java.io.IOException;
@@ -10,10 +12,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -214,8 +216,90 @@ public final class Archive {
         }
     }
 
-    public void extract() throws IOException {
-        // TODO
+    /**
+     * Prepares an operation queue that, when executed, would extract the archive.
+     */
+    public DiskOperationQueue extract() throws IOException {
+        DiskOperationQueue ret = new DiskOperationQueue();
+
+        for (ArchiveRootInfo root : this.roots) {
+            String entry = root.entry();
+            Path path = root.path();
+            if (root.isDirectory()) {
+                this.extractDir(ret, path, entry);
+                continue;
+            }
+            this.extractOrphan(ret, path, entry);
+        }
+
+        return ret;
+    }
+
+    private void extractOrphan(DiskOperationQueue queue, Path path, String entry) {
+        Path parent = path.getParent();
+        if (parent != null && !Files.isDirectory(parent)) {
+            if (Files.exists(parent)) queue.add(DiskOperation.deleteFile(parent));
+            queue.add(DiskOperation.createDirectory(parent));
+        }
+        this.extractFile(queue, path, entry);
+    }
+
+    private void extractFile(DiskOperationQueue queue, Path path, String entry) {
+        Callable<InputStream> procureStream = () -> this.files.read(entry);
+        if (Files.exists(path)) {
+            if (Files.isRegularFile(path)) {
+                queue.add(DiskOperation.overwriteFile(path, procureStream));
+                return;
+            }
+            queue.add(DiskOperation.deleteFile(path));
+        }
+        queue.add(DiskOperation.writeNewFile(path, procureStream));
+    }
+
+    private void extractDir(DiskOperationQueue queue, Path path, String prefix) throws IOException {
+        boolean wasRegularDir = false;
+        Set<String> old = new HashSet<>(0);
+
+        if (Files.exists(path)) {
+            if (Files.isDirectory(path)) {
+                wasRegularDir = true;
+            } else {
+                queue.add(DiskOperation.deleteFile(path));
+            }
+        }
+
+        if (wasRegularDir) {
+            try (Stream<Path> stream = Files.list(path)) {
+                Iterator<Path> iterator = stream.iterator();
+                Path next;
+                while (iterator.hasNext()) {
+                    next = iterator.next();
+                    old.add(next.getFileName().toString());
+                }
+            }
+        } else {
+            queue.add(DiskOperation.createDirectory(path));
+        }
+
+        for (VFSEntity ent : this.files.sub(prefix).list()) {
+            old.remove(ent.name());
+
+            if (ent.isFile()) {
+                this.extractFile(queue, path.resolve(ent.name()), prefix + ent.name());
+            } else if (ent.isDirectory()) {
+                this.extractDir(queue, path.resolve(ent.name()), prefix + ent.name() + "/");
+            }
+        }
+
+        for (String oldName : old) {
+            Path p = path.resolve(oldName);
+
+            if (Files.isDirectory(p)) {
+                queue.add(DiskOperation.deleteDirectory(p));
+            } else {
+                queue.add(DiskOperation.deleteFile(p));
+            }
+        }
     }
 
 }
