@@ -1,10 +1,12 @@
 package com.github.springerris.gui.helper;
 
 import com.github.springerris.gui.WindowContext;
+import com.github.springerris.gui.impl.AwaitingWindow;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.CompletableFuture;
 
 import static java.awt.GridBagConstraints.HORIZONTAL;
 
@@ -41,7 +43,23 @@ public abstract class ChoiceWindow extends GridBagWindow {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            this.parent.onClickChoice(this.index);
+            CompletableFuture<Object> future = new CompletableFuture<>();
+            Thread t = new Thread(() -> this.execute(future));
+            t.setName("Choice Execution Thread");
+            t.start();
+
+            this.parent.ctx.setActiveTask(future);
+            this.parent.transfer(AwaitingWindow.class);
+        }
+
+        private void execute(CompletableFuture<?> future) {
+            try {
+                this.parent.onClickChoice(this.index);
+            } catch (Throwable err) {
+                future.completeExceptionally(err);
+                return;
+            }
+            future.complete(null);
         }
 
     }
