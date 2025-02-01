@@ -61,13 +61,7 @@ public class ImportWindow extends ChoiceWindow {
             // TODO: Maybe show an error?
             return;
         }
-
-        try {
-            this.ctx.loadArchive(p, this::passwordPrompt);
-        } catch (IOException e) {
-            this.ctx.logger().log(Level.WARNING, "Failed to extract", e);
-            this.showError(I18N.WINDOW_IMPORT_ERROR.get());
-        }
+        this.loadArchive(p);
     }
 
     private void onClickChoice1() {
@@ -79,6 +73,19 @@ public class ImportWindow extends ChoiceWindow {
     }
 
     //
+
+    private void loadArchive(Path p) {
+        try {
+            this.ctx.loadArchive(p, this::passwordPrompt);
+        } catch (IllegalArgumentException e) {
+            this.showError(I18N.WINDOW_IMPORT_ERROR_FORMAT.get());
+        } catch (IllegalStateException e) {
+            this.showError(I18N.WINDOW_IMPORT_ERROR_PASSWORD.get());
+        } catch (IOException e) {
+            this.ctx.logger().log(Level.WARNING, "Failed to extract", e);
+            System.exit(1);
+        }
+    }
 
     private String passwordPrompt() {
         String password;

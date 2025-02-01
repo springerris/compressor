@@ -52,6 +52,7 @@ public final class Archive {
 
         Archive ret = new Archive();
         VFS zipVFS = VFS.zip(file, key);
+        if (!zipVFS.exists(".ROOTS")) throw new IllegalArgumentException("Archive is missing metadata");
 
         ArchiveRootInfoFile roots = new ArchiveRootInfoFile();
         try (InputStream is = zipVFS.read(".ROOTS")) {
