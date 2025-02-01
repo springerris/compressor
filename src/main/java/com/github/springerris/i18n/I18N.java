@@ -119,6 +119,46 @@ public final class I18N {
             // TOOD: ru
             .build();
 
+    public static final LangString WINDOW_SYNC_TITLE = builder()
+            .en("Sync")
+            .ru("Распаковать архив") // TODO: Verify
+            .build();
+
+    public static final LangString WINDOW_SYNC_CONFIRM = builder()
+            .en("Confirm")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_SYNC_CANCEL = builder()
+            .en("Cancel")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_SYNC_ERROR = builder()
+            .en("Extraction failed, see log for more details")
+            // TODO ru
+            .build();
+
+    public static final LangString WINDOW_AWAITING_TITLE = builder()
+            .en("Processing...")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_AWAITING_TEXT = builder()
+            .en("Please wait for the operation to complete...")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_AWAITING_COMPLETE = builder()
+            .en("Done!")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_AWAITING_CONTINUE = builder()
+            .en("Continue")
+            // TODO: ru
+            .build();
+
     public static final LangString STAGE_PASSWORD_PROMPT_TITLE = builder()
             .en("Encryption")
             .ru("Выбор пароля")

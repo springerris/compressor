@@ -183,7 +183,7 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
         CorkboardVFSBranch branch = this.getDirectChild(name);
         if (branch.isLink()) {
             CorkboardVFSLink link = branch.asLink();
-            return link.vfs().sub(link.path());
+            return link.path().isEmpty() ? link.vfs() : link.vfs().sub(link.path());
         } else {
             return branch.asDir();
         }

@@ -27,7 +27,7 @@ public class FilesystemVFS extends AbstractVFS {
         int start = 0;
         for (int i=0; i < str.length(); i++) {
             if (str.charAt(i) != '/') continue;
-            ret = ret.resolve(str.substring(0, i));
+            ret = ret.resolve(str.substring(start, i));
             start = i + 1;
         }
         if (start != str.length())

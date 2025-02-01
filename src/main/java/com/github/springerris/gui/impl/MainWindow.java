@@ -114,7 +114,7 @@ public class MainWindow extends BorderWindow {
     }
 
     private void onClickSync(ActionEvent ignored) {
-        // TODO
+        this.transfer(SyncWindow.class);
     }
 
     //
