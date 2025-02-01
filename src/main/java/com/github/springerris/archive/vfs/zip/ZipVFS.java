@@ -72,7 +72,8 @@ public class ZipVFS extends AbstractVFS implements VFSEntity {
     @Override
     public VFS sub(String name) {
         if (name.isEmpty()) return this;
-        return new ZipVFS(this.file, this.prefix + name + "/", this.key);
+        if (!name.endsWith("/")) name += "/";
+        return new ZipVFS(this.file, this.prefix + name, this.key);
     }
 
     @Override

@@ -52,8 +52,8 @@ public class ExportWindow extends ChoiceWindow {
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jfc.removeChoosableFileFilter(jfc.getAcceptAllFileFilter());
-        jfc.setFileFilter(new FileNameExtensionFilter(zipDesc, ".zip"));
-        jfc.setFileFilter(new FileNameExtensionFilter(encryptedZipDesc, ".zip.m64"));
+        jfc.setFileFilter(new FileNameExtensionFilter(zipDesc, "zip"));
+        jfc.setFileFilter(new FileNameExtensionFilter(encryptedZipDesc, "m64"));
 
         int r = jfc.showSaveDialog(null);
         if (r != JFileChooser.APPROVE_OPTION) return;

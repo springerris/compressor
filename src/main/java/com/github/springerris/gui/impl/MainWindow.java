@@ -110,7 +110,7 @@ public class MainWindow extends BorderWindow {
     }
 
     private void onClickImport(ActionEvent ignored) {
-        // TODO
+        this.transfer(ImportWindow.class);
     }
 
     private void onClickSync(ActionEvent ignored) {
