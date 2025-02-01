@@ -6,25 +6,28 @@ import com.github.springerris.archive.vfs.VFSEntity;
 import io.github.wasabithumb.magma4j.Magma;
 
 import java.io.*;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class ZipVFS extends AbstractVFS implements VFSEntity {
+public class ZipVFS extends AbstractVFS implements VFSEntity, ZipEntryProvider {
 
     private final File file;
     private final String prefix;
     private final byte[] key;
+    private final ZipEntryProvider entryProvider;
 
-    ZipVFS(File file, String prefix, byte[] key) {
+    ZipVFS(File file, String prefix, byte[] key, ZipEntryProvider entryProvider) {
         this.file = file;
         this.prefix = prefix;
         this.key = key;
+        this.entryProvider = entryProvider == null ? ZipEntryProvider.cached(this) : entryProvider;
     }
 
     public ZipVFS(File file, byte[] key) {
-        this(file, "", key);
+        this(file, "", key, null);
     }
 
     public ZipVFS(File file) {
@@ -49,22 +52,20 @@ public class ZipVFS extends AbstractVFS implements VFSEntity {
         }
     }
 
-    private ZipEntry getEntry(ZipInputStream zis, String name) throws IOException {
-        int len = name.length();
-        ZipEntry ze;
-        String zeName;
-        int zeNameLen;
-
-        while ((ze = zis.getNextEntry()) != null) {
-            zeName = ze.getName();
-            zeNameLen = zeName.length();
-            if (zeNameLen == len) {
-                if (zeName.equals(name)) return ze;
-            } else if (zeNameLen == (len + 1)) {
-                if (zeName.startsWith(name) && zeName.charAt(zeNameLen - 1) == '/') return ze;
-            }
+    private ZipEntry getEntry(String name) throws IOException {
+        for (ZipEntry ze : this.entryProvider.getEntries()) {
+            if (this.entryMatches(ze, name)) return ze;
         }
         return null;
+    }
+
+    private boolean entryMatches(ZipEntry ze, String name) {
+        String zeName = ze.getName();
+        if (zeName.length() == name.length())
+            return zeName.equals(name);
+        if (zeName.length() == (name.length() + 1))
+            return zeName.startsWith(name) && zeName.charAt(name.length()) == '/';
+        return false;
     }
 
     //
@@ -73,7 +74,7 @@ public class ZipVFS extends AbstractVFS implements VFSEntity {
     public VFS sub(String name) {
         if (name.isEmpty()) return this;
         if (!name.endsWith("/")) name += "/";
-        return new ZipVFS(this.file, this.prefix + name, this.key);
+        return new ZipVFS(this.file, this.prefix + name, this.key, this.entryProvider);
     }
 
     @Override
@@ -83,22 +84,19 @@ public class ZipVFS extends AbstractVFS implements VFSEntity {
         VFSEntity[] ret = new VFSEntity[capacity];
         Pattern p = Pattern.compile("^" + Pattern.quote(this.prefix) + "([^/]+)/?$");
 
-        try (ZipInputStream zis = this.open()) {
-            ZipEntry ze;
-            while ((ze = zis.getNextEntry()) != null) {
-                Matcher m = p.matcher(ze.getName());
-                if (!m.matches()) continue;
-                String name = m.group(1);
+        for (ZipEntry ze : this.entryProvider.getEntries()) {
+            Matcher m = p.matcher(ze.getName());
+            if (!m.matches()) continue;
+            String name = m.group(1);
 
-                if (len == capacity) {
-                    int newCapacity = (int) Math.ceil((capacity + 1) / 0.75d);
-                    VFSEntity[] cpy = new VFSEntity[newCapacity];
-                    System.arraycopy(ret, 0, cpy, 0, capacity);
-                    ret = cpy;
-                    capacity = newCapacity;
-                }
-                ret[len++] = new ZipVFSEntity(ze, name);
+            if (len == capacity) {
+                int newCapacity = (int) Math.ceil((capacity + 1) / 0.75d);
+                VFSEntity[] cpy = new VFSEntity[newCapacity];
+                System.arraycopy(ret, 0, cpy, 0, capacity);
+                ret = cpy;
+                capacity = newCapacity;
             }
+            ret[len++] = new ZipVFSEntity(ze, name);
         }
 
         if (len < capacity) {
@@ -119,8 +117,8 @@ public class ZipVFS extends AbstractVFS implements VFSEntity {
 
     private VFSEntity stat0(String name) {
         ZipEntry ze;
-        try (ZipInputStream zis = this.open()) {
-            ze = this.getEntry(zis, this.prefix + name);
+        try {
+            ze = this.getEntry(this.prefix + name);
             if (ze == null) return null;
         } catch (IOException ignored) {
             return null;
@@ -143,8 +141,8 @@ public class ZipVFS extends AbstractVFS implements VFSEntity {
 
     @Override
     public boolean exists(String name) {
-        try (ZipInputStream zis = this.open()) {
-            return this.getEntry(zis, this.prefix + name) != null;
+        try {
+            return this.getEntry(this.prefix + name) != null;
         } catch (IOException ignored) {
             return false;
         }
@@ -155,7 +153,10 @@ public class ZipVFS extends AbstractVFS implements VFSEntity {
         ZipInputStream zis = this.open();
         boolean close = true;
         try {
-            ZipEntry ze = this.getEntry(zis, this.prefix + name);
+            ZipEntry ze;
+            while ((ze = zis.getNextEntry()) != null) {
+                if (this.entryMatches(ze, this.prefix + name)) break;
+            }
             if (ze == null) throw new IOException("Entity \"" + this.prefix + name + "\" does not exist");
             close = false;
             return new FilterInputStream(zis) {
@@ -211,6 +212,21 @@ public class ZipVFS extends AbstractVFS implements VFSEntity {
     @Override
     public long size() {
         return 0L;
+    }
+
+    //
+
+    /** INTERNAL USAGE ONLY */
+    @Override
+    public Collection<ZipEntry> getEntries() throws IOException {
+        List<ZipEntry> ret = new LinkedList<>();
+        try (ZipInputStream zis = this.open()) {
+            ZipEntry ze;
+            while ((ze = zis.getNextEntry()) != null) {
+                ret.add(ze);
+            }
+        }
+        return ret;
     }
 
 }
