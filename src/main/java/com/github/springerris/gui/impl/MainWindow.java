@@ -75,7 +75,11 @@ public class MainWindow extends BorderWindow {
         }
 
         this.ctx.archive().add(p);
-        this.updateEntries();
+        if (this.path.isEmpty()) {
+            this.setPath(this.findDeepestRichPath());
+        } else {
+            this.updateEntries();
+        }
     }
 
     private void onClickUp(ActionEvent ignored) {
@@ -145,6 +149,30 @@ public class MainWindow extends BorderWindow {
         }
     }
 
+    private String findDeepestRichPath() {
+        StringBuilder sb = new StringBuilder();
+        this.findDeepestRichPath0(sb, this.ctx.archive().files());
+        return sb.toString();
+    }
+
+    private void findDeepestRichPath0(StringBuilder sb, VFS head) {
+        VFSEntity[] ents;
+        try {
+            ents = head.list();
+        } catch (IOException e) {
+            return;
+        }
+
+        if (ents.length != 1) return;
+
+        VFSEntity ent = ents[0];
+        if (!ent.isDirectory()) return;
+
+        if (!sb.isEmpty()) sb.append('/');
+        sb.append(ent.name());
+        this.findDeepestRichPath0(sb, head.sub(ent.name()));
+    }
+
     //
 
     @Override
@@ -162,7 +190,8 @@ public class MainWindow extends BorderWindow {
 
         this.addElement(entriesPane);
 
-        this.path = "";
+        this.path = this.findDeepestRichPath();
+        this.pathField.setText(this.path);
         this.entries = entriesModel;
         this.entriesList = entriesList;
         this.updateEntries();
