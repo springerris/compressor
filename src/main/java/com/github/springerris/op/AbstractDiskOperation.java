@@ -2,6 +2,9 @@ package com.github.springerris.op;
 
 import java.nio.file.Path;
 
+/**
+ * @see DiskOperation
+ */
 abstract class AbstractDiskOperation implements DiskOperation {
 
     protected final Path path;

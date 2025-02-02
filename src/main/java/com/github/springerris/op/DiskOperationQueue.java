@@ -8,6 +8,10 @@ import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A {@link Queue queue} of {@link DiskOperation}s.
+ * @see #execute(Logger)
+ */
 public class DiskOperationQueue extends AbstractQueue<DiskOperation> {
 
     private final Queue<DiskOperation> backing;
@@ -48,6 +52,11 @@ public class DiskOperationQueue extends AbstractQueue<DiskOperation> {
 
     //
 
+    /**
+     * Drains the queue, executing all of its operations in turn.
+     * @param logger Logger to receive debug messages & warnings
+     * @return True if all operations executed successfully
+     */
     public boolean execute(Logger logger) {
         DiskOperation op;
         while ((op = this.poll()) != null) {

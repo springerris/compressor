@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * @see DiskOperation
+ */
 final class DeleteFileDiskOperation extends AbstractDiskOperation {
 
     public DeleteFileDiskOperation(Path file) {

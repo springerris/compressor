@@ -5,6 +5,11 @@ import com.github.springerris.archive.vfs.VFSEntity;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A {@link JList} specialized to view {@link VFSEntity} objects.
+ * This differs from the default implementation in that a file or directory icon
+ * will be added to each label appropriately.
+ */
 public class VFSEntityList extends JList<VFSEntity> {
 
     public VFSEntityList(ListModel<VFSEntity> dataModel) {

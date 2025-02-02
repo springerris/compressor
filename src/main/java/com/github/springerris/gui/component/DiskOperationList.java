@@ -5,6 +5,11 @@ import com.github.springerris.op.DiskOperation;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A {@link JList} specialized to view {@link DiskOperation} objects.
+ * This differs from the default implementation in that the label will be colored correctly
+ * to reflect it's {@link DiskOperation.Type type}, and an arrow icon will be added.
+ */
 public class DiskOperationList extends JList<DiskOperation> {
 
     public DiskOperationList(ListModel<DiskOperation> dataModel) {

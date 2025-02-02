@@ -9,6 +9,9 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
+/**
+ * @see DiskOperation
+ */
 final class DeleteDirectoryDiskOperation extends AbstractDiskOperation {
 
     public DeleteDirectoryDiskOperation(Path dir) {

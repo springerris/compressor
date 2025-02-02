@@ -12,6 +12,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.concurrent.Callable;
 
+/**
+ * @see DiskOperation
+ */
 final class OverwriteFileDiskOperation extends WritingDiskOperation {
 
     private static final OpenOption[] OPEN_OPTIONS = new OpenOption[] {

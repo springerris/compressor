@@ -6,6 +6,9 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
+/**
+ * @see DiskOperation
+ */
 abstract class WritingDiskOperation extends AbstractDiskOperation {
 
     protected final Callable<InputStream> source;

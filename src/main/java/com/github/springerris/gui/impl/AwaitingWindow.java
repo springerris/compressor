@@ -7,7 +7,13 @@ import com.github.springerris.i18n.I18N;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.concurrent.CompletableFuture;
 
+/**
+ * A window which waits for the
+ * {@link WindowContext#setActiveTask(CompletableFuture) active task} to complete.
+ * The active task should be set before transferring to this window.
+ */
 public class AwaitingWindow extends GridBagWindow {
 
     private JLabel text;

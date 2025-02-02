@@ -3,6 +3,9 @@ package com.github.springerris.archive.vfs;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * Implements {@link VFS} and provides a neatly formatted tree as a {@link #toString()} implementation.
+ */
 public abstract class AbstractVFS implements VFS {
 
     protected String treeTitle() {

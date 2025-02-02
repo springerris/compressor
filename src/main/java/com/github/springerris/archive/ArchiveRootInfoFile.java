@@ -10,7 +10,7 @@ import java.nio.file.FileSystems;
 import java.util.*;
 
 /**
- * Handles serializing & deserializing collections of ArchiverRootInfo (TSV format)
+ * Handles serializing & deserializing lists of ArchiverRootInfo.
  */
 final class ArchiveRootInfoFile implements Iterable<ArchiveRootInfo> {
 

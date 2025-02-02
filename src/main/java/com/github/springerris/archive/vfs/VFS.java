@@ -15,22 +15,37 @@ import java.nio.file.Path;
  */
 public interface VFS {
 
+    /**
+     * Creates an empty VFS. Cannot store files directly; but can create directories
+     * and can mount other VFS instances.
+     */
     static VFS empty() {
         return new CorkboardVFS();
     }
 
+    /**
+     * Creates a VFS which represents the content of the specified directory on the filesystem.
+     */
     static VFS directory(Path path) {
         if (!Files.isDirectory(path))
             throw new IllegalArgumentException("Path \"" + path.toAbsolutePath() + "\" is not a directory");
         return new FilesystemVFS(path);
     }
 
+    /**
+     * Creates a VFS which represents the content of the specified ZIP on the filesystem.
+     * @param key If not null, assumes the ZIP is encrypted and uses this as the decryption key.
+     */
     static VFS zip(Path path, byte[] key) {
         if (!Files.isRegularFile(path))
             throw new IllegalArgumentException("Path \"" + path.toAbsolutePath() + "\" is not a file");
         return new ZipVFS(path.toFile(), key);
     }
 
+    /**
+     * Creates a VFS which represents the content of the specified unencrypted ZIP on the filesystem.
+     * @see #zip(Path, byte[])
+     */
     static VFS zip(Path path) {
         return zip(path, null);
     }

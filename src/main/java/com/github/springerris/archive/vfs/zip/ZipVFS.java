@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/**
+ * A {@link VFS} which represents the content of a zip/encrypted zip file on the filesystem
+ */
 public class ZipVFS extends AbstractVFS implements VFSEntity, ZipEntryProvider {
 
     private final File file;

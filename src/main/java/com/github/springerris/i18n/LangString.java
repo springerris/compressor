@@ -3,6 +3,12 @@ package com.github.springerris.i18n;
 import java.util.EnumMap;
 import java.util.Map;
 
+/**
+ * Text that may resolve differently depending on the desired language.
+ * If no language is specified, the string resolves against the
+ * {@link I18N#LANGUAGE active language}. Any implicit stringification
+ * will translate the object in this way.
+ */
 public class LangString implements CharSequence {
 
     public static Builder builder() {
@@ -25,6 +31,10 @@ public class LangString implements CharSequence {
         return this.map.getOrDefault(language, "???");
     }
 
+    /**
+     * Resolves this string against the {@link I18N#LANGUAGE active language}.
+     * @see #get(Language)
+     */
     public String get() {
         return this.active;
     }

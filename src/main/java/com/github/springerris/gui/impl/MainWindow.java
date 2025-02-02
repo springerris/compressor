@@ -123,12 +123,21 @@ public class MainWindow extends BorderWindow {
 
     //
 
+    /**
+     * Navigates to the specified path.
+     * Path is assumed to be valid.
+     */
     private void setPath(String path) {
         this.path = path;
         this.pathField.setText(path);
         this.updateEntries();
     }
 
+    /**
+     * Updates the entry list such that it reflects the contents of the current path.
+     * This is called implicitly by {@link #setPath(String)} since setting the path without
+     * updating the entry list is usually a mistake.
+     */
     private void updateEntries() {
         VFS root = this.ctx.archive().files();
         if (!this.path.isEmpty()) root = root.sub(this.path);
@@ -149,6 +158,10 @@ public class MainWindow extends BorderWindow {
         }
     }
 
+    /**
+     * Identifies a path that would make sense to navigate to by default;
+     * essentially the first directory down the tree which contains either 0 children or more than 1 child.
+     */
     private String findDeepestRichPath() {
         StringBuilder sb = new StringBuilder();
         this.findDeepestRichPath0(sb, this.ctx.archive().files());

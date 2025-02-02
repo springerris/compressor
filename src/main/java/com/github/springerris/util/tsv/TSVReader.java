@@ -7,6 +7,33 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility to read the TSV (tab-separated values) format. Currently used for the .ROOTS metadata in Archive.
+ *
+ * <h3>Example TSV</h3>
+ * <pre>{@code
+ * a    b   c
+ * foo1    bar1    baz1
+ * foo2    bar2    baz2
+ * }</pre>
+ *
+ * <h3>Example Code</h3>
+ * <pre>{@code
+ * reader.readHeader();
+ *
+ * reader.readRow(); // 3
+ * reader.readValue("a"); // foo1
+ * reader.readValue(1);   // bar1
+ * reader.readValue("c"); // baz1
+ *
+ * reader.readRow(); // 3
+ * reader.readValue(0);   // foo2
+ * reader.readValue("b"); // bar2
+ * reader.readValue(2);   // baz2
+ *
+ * reader.readRow(); // -1
+ * }</pre>
+ */
 public class TSVReader extends BufferedReader {
 
     private final int expectedColumns;

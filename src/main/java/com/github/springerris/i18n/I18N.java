@@ -2,12 +2,18 @@ package com.github.springerris.i18n;
 
 import static com.github.springerris.i18n.LangString.builder;
 
-/** Internationalization */
+/**
+ * Holds internationalization keys; effectively an enum.
+ * @see #LANGUAGE
+ */
 public final class I18N {
 
 
-    /** Language in use */
-    public static Language LANGUAGE = Language.SYSTEM;
+    /**
+     * The lnguage in use.
+     * Used to resolve {@link LangString}s when not otherwise specified.
+     */
+    public static final Language LANGUAGE = Language.SYSTEM;
 
     //
 
