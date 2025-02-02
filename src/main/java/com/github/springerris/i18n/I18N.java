@@ -2,110 +2,212 @@ package com.github.springerris.i18n;
 
 import static com.github.springerris.i18n.LangString.builder;
 
-/** Internationalization */
+/**
+ * Holds internationalization keys; effectively an enum.
+ * @see #LANGUAGE
+ */
 public final class I18N {
 
 
-    /** Language in use */
-    public static Language LANGUAGE = Language.SYSTEM;
+    /**
+     * The lnguage in use.
+     * Used to resolve {@link LangString}s when not otherwise specified.
+     */
+    public static final Language LANGUAGE = Language.SYSTEM;
 
+    //
 
-    public static final LangString WINDOW_MAIN_BUTTON_EXTRACT_ZIP = builder()
-            .en("Extract Archive")
-            .ru("<html>Распаковать<br>архив</html>")
-            .build();
-
-    public static LangString LIFECYCLE_START = builder()
+    public static final LangString LIFECYCLE_START = builder()
             .en("Starting PP2024")
             .build();
 
-    public static LangString LIFECYCLE_CONTEXT = builder()
+    public static final LangString LIFECYCLE_CONTEXT = builder()
             .en("Created application context")
             .build();
 
-    public static LangString POPUP_INFO = builder()
+    public static final LangString POPUP_INFO = builder()
             .en("Notice")
             .ru("Информация")
             .build();
 
-    public static LangString POPUP_ERROR = builder()
+    public static final LangString POPUP_ERROR = builder()
             .en("Error")
             .ru("Ошибка")
             .build();
 
-    public static LangString WINDOW_MAIN_TITLE = builder()
+    public static final LangString WINDOW_MAIN_TITLE = builder()
             .en("Main Window")
             .ru("Главное окно")
             .build();
 
-    public static LangString WINDOW_MAIN_BUTTON_ADD_FILE = builder()
-            .en("Add file to archive")
-            .ru("<html>Добавить <br>файл в архив</html>")
+    public static final LangString WINDOW_MAIN_BUTTON_ADD = builder()
+            .en("Add")
+            .ru("Добавить файл в архив") // TODO: Abbreviate
             .build();
 
-    public static LangString WINDOW_MAIN_BUTTON_WRITE_ZIP = builder()
-            .en("Write archive")
-            .ru("<html>Записать<br> архив</html>")
+    public static final LangString WINDOW_MAIN_BUTTON_IMPORT = builder()
+            .en("Import")
+            // TODO: ru
             .build();
 
-    public static LangString WINDOW_MAIN_BUTTON_ASCEND = builder()
-            .en("Move Up ..")
-            .ru("На уровень выше ..")
+    public static final LangString WINDOW_MAIN_BUTTON_EXPORT = builder()
+            .en("Export")
+            .ru("Отправить архив в..") // TODO: Abbreviate
             .build();
 
-    public static LangString WINDOW_MAIN_BUTTON_ADD_DIR = builder()
-            .en("Add directory to archive")
-            .ru("<html>Добавить папку<br> с файлами в архив</html>")
+    public static final LangString WINDOW_MAIN_BUTTON_SYNC = builder()
+            .en("Sync")
+            .ru("Распаковать архив") // TODO: Abbreviate
             .build();
 
-    public static LangString WINDOW_MAIN_BUTTON_SEND = builder()
-            .en("Send archive")
-            .ru("<html>Отправить <br> архив в..       </html>")
-            .build();
-
-    public static LangString WINDOW_MAIN_ERROR_ADD_FILE = builder()
+    public static final LangString WINDOW_MAIN_ERROR_ADD_FILE = builder()
             .en("Failed to add file (violates hierarchy)")
             .ru("Не удалось добавить файл")
             .build();
 
-    public static LangString WINDOW_MAIN_ERROR_ADD_DIR = builder()
-            .en("Failed to add directory (violates hierarchy)")
-            .ru("Не удалось добавить папку")
-            .build();
-
-    public static LangString WINDOW_UPLOAD_TITLE = builder()
+    public static final LangString WINDOW_EXPORT_TITLE = builder()
             .en("Select a Service")
             .ru("Выбрать сервис")
             .build();
 
-    public static LangString WINDOW_UPLOAD_OPTION_YANDEX = builder()
+    public static final LangString WINDOW_EXPORT_OPTION_ZIP = builder()
+            .en("Export as ZIP")
+            .ru("Записать архив")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_OPTION_ZIP_TYPE_BASIC = builder()
+            .en("ZIP")
+            .ru("ZIP")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_OPTION_ZIP_TYPE_ENCRYPTED = builder()
+            .en("Encrypted ZIP")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_EXPORT_OPTION_YANDEX = builder()
             .en("Upload to Yandex Disk")
             .ru("Отправить на Yandex Disk")
             .build();
 
-    public static LangString WINDOW_UPLOAD_OPTION_DRIVE = builder()
+    public static final LangString WINDOW_EXPORT_OPTION_DRIVE = builder()
             .en("Upload to Google Drive")
             .ru("Отправить на Google Drive")
             .build();
 
-    public static LangString STAGE_PASSWORD_PROMPT_TITLE = builder()
+    public static final LangString WINDOW_IMPORT_TITLE = builder()
+            .en("Import")
+            // TOOD: ru
+            .build();
+
+    public static final LangString WINDOW_IMPORT_OPTION_ZIP = builder()
+            .en("Import from Zip")
+            // TOOD: ru
+            .build();
+
+    public static final LangString WINDOW_IMPORT_OPTION_YANDEX = builder()
+            .en("Download from Yandex Disk")
+            // TOOD: ru
+            .build();
+
+    public static final LangString WINDOW_IMPORT_OPTION_DRIVE = builder()
+            .en("Download from Google Drive")
+            // TOOD: ru
+            .build();
+
+    public static final LangString WINDOW_IMPORT_ERROR_PASSWORD = builder()
+            .en("Incorrect encryption password")
+            // TOOD: ru
+            .build();
+
+    public static final LangString WINDOW_IMPORT_ERROR_FORMAT = builder()
+            .en("Improper format (ZIP was not generated by this application)")
+            // TOOD: ru
+            .build();
+
+    public static final LangString WINDOW_SYNC_TITLE = builder()
+            .en("Sync")
+            .ru("Распаковать архив") // TODO: Verify
+            .build();
+
+    public static final LangString WINDOW_SYNC_CONFIRM = builder()
+            .en("Confirm")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_SYNC_CANCEL = builder()
+            .en("Cancel")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_SYNC_ERROR = builder()
+            .en("Extraction failed, see log for more details")
+            // TODO ru
+            .build();
+
+    public static final LangString WINDOW_AWAITING_TITLE = builder()
+            .en("Processing...")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_AWAITING_TEXT = builder()
+            .en("Please wait for the operation to complete...")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_AWAITING_COMPLETE = builder()
+            .en("Done!")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_AWAITING_CONTINUE = builder()
+            .en("Continue")
+            // TODO: ru
+            .build();
+
+    public static final LangString STAGE_PASSWORD_PROMPT_TITLE = builder()
             .en("Encryption")
             .ru("Выбор пароля")
             .build();
 
-    public static LangString STAGE_PASSWORD_PROMPT_CONFIRM = builder()
+    public static final LangString STAGE_PASSWORD_PROMPT_CONFIRM = builder()
             .en("Encrypt the archive?")
             .ru("Добавить пароль для доступа к архиву?")
             .build();
 
-    public static LangString STAGE_PASSWORD_PROMPT_ENTER = builder()
+    public static final LangString STAGE_PASSWORD_PROMPT_ENTER = builder()
             .en("Enter the password for the archive")
             .ru("Введите пароль для архива")
             .build();
 
-    public static LangString SEND_YANDEX_PICK_NAME = builder()
+    public static final LangString SEND_PICK_NAME = builder()
             .en("Enter a file name for the archive")
             .ru("Введите название файла для архива")
+            .build();
+
+    public static final LangString OP_WRITE_NEW_FILE = builder()
+            .en("Write new file")
+            // TODO: ru
+            .build();
+
+    public static final LangString OP_OVERWRITE_FILE = builder()
+            .en("Overwrite file")
+            // TODO: ru
+            .build();
+
+    public static final LangString OP_CREATE_DIR = builder()
+            .en("Create directory")
+            // TODO: ru
+            .build();
+
+    public static final LangString OP_DELETE_FILE = builder()
+            .en("Delete file")
+            // TODO: ru
+            .build();
+
+    public static final LangString OP_DELETE_DIR = builder()
+            .en("Delete directory")
+            // TODO: ru
             .build();
 
 }
