@@ -3,16 +3,22 @@ package com.github.springerris.util;
 import com.github.springerris.gui.Window;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.i18n.I18N;
+import io.github.wasabithumb.magma4j.Magma;
 import io.github.wasabithumb.yandisk4j.YanDisk;
 import io.github.wasabithumb.yandisk4j.auth.AuthHandler;
 import io.github.wasabithumb.yandisk4j.auth.AuthResponse;
 import io.github.wasabithumb.yandisk4j.auth.AuthScheme;
 import io.github.wasabithumb.yandisk4j.auth.scope.AuthScope;
+import io.github.wasabithumb.yandisk4j.node.Node;
+import io.github.wasabithumb.yandisk4j.node.accessor.NodeAccessor;
+import io.github.wasabithumb.yandisk4j.node.accessor.NodeDownloader;
 import io.github.wasabithumb.yandisk4j.node.accessor.NodeUploader;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.logging.Level;
 
 public class YanHandler {
@@ -50,13 +56,19 @@ public class YanHandler {
     public void upload(String password) {
         YanDisk yd = YanDisk.yanDisk(this.getToken());
         String zipName = JOptionPane.showInputDialog(I18N.SEND_PICK_NAME.get());
-        if (zipName.isBlank()) {
+        if (zipName == null || zipName.isBlank() ) {
             // TODO: something will go here
             return;
         }
+        yd.mkdir("disk:/.archives");
+        String pathstr = "\"disk:/.archives/\"" + zipName + "\".zip\"";
+        if (!password.isBlank()) {
+            pathstr = pathstr + ".m64";
+        }
+        NodeUploader nu = yd.upload(pathstr);
 
-        NodeUploader nu = yd.upload("disk:/" + zipName + ".zip");
-        try (OutputStream os = nu.open()) {
+        try ( OutputStream os = nu.open()) {
+
             this.ctx.archive().write(os, password);
         } catch (IOException ex) {
             this.ctx.logger().log(Level.SEVERE, "Ошибка работы с сервисом Yandex Disk", ex);
@@ -67,6 +79,17 @@ public class YanHandler {
             );
             System.exit(1);
         }
+    }
+
+    // TODO: the rest
+    public void download() {
+        YanDisk yd = YanDisk.yanDisk(this.getToken());
+        //NodeDownloader
+    };
+
+    public List<Node> listFiles() {
+        YanDisk yd = YanDisk.yanDisk(this.getToken());
+        return yd.list("disk:/.archives", 100, 0);
     }
 
 }

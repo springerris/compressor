@@ -3,6 +3,7 @@ package com.github.springerris.gui.impl;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.ChoiceWindow;
 import com.github.springerris.i18n.I18N;
+import com.github.springerris.util.YanHandler;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -64,7 +65,8 @@ public class ImportWindow extends ChoiceWindow {
     }
 
     private void onClickChoice1() {
-        // TODO
+        YanHandler yh = new YanHandler(this.ctx, this);
+        YanFilesWindow yfw = new YanFilesWindow(this.ctx,"Выберите архив для загрузки",300,500,yh);
     }
 
     private void onClickChoice2() {

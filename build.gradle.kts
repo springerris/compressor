@@ -13,7 +13,7 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation("io.github.wasabithumb:yandisk4j:0.2.1")
+    implementation("io.github.wasabithumb:yandisk4j:0.4.0")
     implementation("io.github.wasabithumb:magma4j:0.1.1")
 }
 
