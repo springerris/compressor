@@ -8,6 +8,7 @@ import com.github.springerris.util.YanHandler;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,7 +67,10 @@ public class ImportWindow extends ChoiceWindow {
 
     private void onClickChoice1() {
         YanHandler yh = new YanHandler(this.ctx, this);
-        YanFilesWindow yfw = new YanFilesWindow(this.ctx,"Выберите архив для загрузки",300,500,yh);
+        YanFilesWindow yfw = new YanFilesWindow(this.ctx,"Выберите архив для скачивания",300,500);
+        yfw.setYh(yh);
+        yfw.fillList();
+        yfw.setVisible(true);
     }
 
     private void onClickChoice2() {

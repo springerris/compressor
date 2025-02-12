@@ -15,11 +15,12 @@ import io.github.wasabithumb.yandisk4j.node.accessor.NodeDownloader;
 import io.github.wasabithumb.yandisk4j.node.accessor.NodeUploader;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.logging.Level;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class YanHandler {
 
@@ -60,9 +61,9 @@ public class YanHandler {
             // TODO: something will go here
             return;
         }
-        yd.mkdir("disk:/.archives");
-        String pathstr = "\"disk:/.archives/\"" + zipName + "\".zip\"";
-        if (!password.isBlank()) {
+        yd.mkdir("disk:/.archives",true);
+        String pathstr = "disk:/.archives/" + zipName + ".zip";
+        if (password == null) {
             pathstr = pathstr + ".m64";
         }
         NodeUploader nu = yd.upload(pathstr);
@@ -82,13 +83,25 @@ public class YanHandler {
     }
 
     // TODO: the rest
-    public void download() {
+    public void download(Node n, File f) throws IOException {
         YanDisk yd = YanDisk.yanDisk(this.getToken());
-        //NodeDownloader
+        NodeDownloader nd = yd.download(n.path());
+        if (f.exists()) {
+            int result = JOptionPane.showConfirmDialog(null,"Такой архив уже есть в данной директории, заменить?", "Информация",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if(result == JOptionPane.YES_OPTION){
+                Files.copy(nd.open(), f.toPath(),REPLACE_EXISTING);
+            }
+        } else {
+            Files.copy(nd.open(), f.toPath(),REPLACE_EXISTING);
+        }
+
     };
 
     public List<Node> listFiles() {
         YanDisk yd = YanDisk.yanDisk(this.getToken());
+        yd.mkdir("disk:/.archives",true);
         return yd.list("disk:/.archives", 100, 0);
     }
 

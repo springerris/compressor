@@ -15,6 +15,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("io.github.wasabithumb:yandisk4j:0.4.0")
     implementation("io.github.wasabithumb:magma4j:0.1.1")
+    implementation("com.hierynomus:sshj:0.39.0")
 }
 
 tasks.test {
