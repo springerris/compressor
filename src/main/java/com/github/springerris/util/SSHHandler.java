@@ -19,7 +19,7 @@ public class SSHHandler {
     private String host;
     private SSHClient client;
 
-    public SSHHandler(String user, String pwd, String remoteHost, Short port)  {
+    public SSHHandler(String user, String pwd, String remoteHost, int port)  {
 
         this.client = new SSHClient();
         client.addHostKeyVerifier(new PromiscuousVerifier());

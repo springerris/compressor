@@ -28,20 +28,19 @@ public class SSHWindow extends GridBagWindow {
     protected void setupContent() {
         confirm = new JButton("Подключится");
         userField = new JTextField();
-        pwdField = new JTextField();
+        pwdField = new JPasswordField();
         hostField = new JTextField();
-        /*
+
         NumberFormat format = NumberFormat.getInstance();
         NumberFormatter formatter = new NumberFormatter(format);
-        formatter.setValueClass(Short.class);
+        formatter.setValueClass(Integer.class);
         formatter.setMinimum(0);
-        formatter.setMaximum(Short.MAX_VALUE);
+        formatter.setMaximum((Short.MAX_VALUE*2)-1);
         formatter.setAllowsInvalid(false);
         formatter.setCommitsOnValidEdit(true);
-         */
-        portField = new JFormattedTextField();
+        portField = new JFormattedTextField(formatter);
         confirm.addActionListener(e -> {
-            SSHHandler sshHandler = new SSHHandler(this.userField.getText(),this.pwdField.getText(),this.hostField.getText(),Short.parseShort(this.portField.getText()));
+            SSHHandler sshHandler = new SSHHandler(this.userField.getText(),this.pwdField.getText(),this.hostField.getText(),((Number) this.portField.getValue()).intValue());
 
         });
         portField.setText("22");
@@ -52,7 +51,7 @@ public class SSHWindow extends GridBagWindow {
         userField.setText("lucky");
 
         this.addElement(0,0,5,new Label("Хост"),HORIZONTAL);
-        this.addElement(5,0,1,new Label("Порт"),HORIZONTAL);
+        this.addElement(5,0,1,new Label("Порт"));
         this.addElement(0,1,5,hostField,HORIZONTAL);
         this.addElement(5,1,1,portField,HORIZONTAL);
         this.addElement(0,2,5,new Label("Пользователь"),HORIZONTAL);
