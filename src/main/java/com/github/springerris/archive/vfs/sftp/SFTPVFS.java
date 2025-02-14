@@ -3,16 +3,51 @@ package com.github.springerris.archive.vfs.sftp;
 import com.github.springerris.archive.vfs.AbstractVFS;
 import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
+import com.github.springerris.archive.vfs.fs.FilesystemVFS;
+import net.schmizz.sshj.sftp.RemoteFile;
+import net.schmizz.sshj.sftp.RemoteResource;
+import net.schmizz.sshj.sftp.RemoteResourceInfo;
+import net.schmizz.sshj.sftp.SFTPClient;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
 
-public class SFTPVFS extends AbstractVFS implements VFSEntity {
+public class SFTPVFS extends AbstractVFS {
+
+    private final SFTPClient sftpClient;
+    private final RemoteResource root;
+
+    public SFTPVFS(RemoteResource root, SFTPClient sftpClient) {
+        this.sftpClient = sftpClient;
+        this.root = root;
+    }
 
     @Override
     public VFS sub(String name) {
-        return null;
+        try {
+            RemoteResource rs = this.sftpClient.open("./" + name);
+            List<RemoteResourceInfo> rri = this.sftpClient.ls("./");
+            RemoteResourceInfo rriSpecific = null;
+            for (RemoteResourceInfo r : rri) {
+                if (Objects.equals(r.getName(), name)) {
+                    rriSpecific = r;
+                }
+            }
+            if (rriSpecific != null) {
+                if (rriSpecific.isDirectory()) {
+                    throw new IllegalArgumentException("Path \"" + rriSpecific.getPath() + "\" is not a directory");
+                }
+            }
+
+            return new SFTPVFS(rs,sftpClient);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -22,6 +57,7 @@ public class SFTPVFS extends AbstractVFS implements VFSEntity {
 
     @Override
     public VFSEntity stat(String name) {
+        RemoteResource rs;
         return null;
     }
 
@@ -32,6 +68,7 @@ public class SFTPVFS extends AbstractVFS implements VFSEntity {
 
     @Override
     public InputStream read(String name) throws IOException {
+
         return null;
     }
 
@@ -50,23 +87,4 @@ public class SFTPVFS extends AbstractVFS implements VFSEntity {
 
     }
 
-    @Override
-    public String name() {
-        return "";
-    }
-
-    @Override
-    public boolean isFile() {
-        return false;
-    }
-
-    @Override
-    public boolean isDirectory() {
-        return false;
-    }
-
-    @Override
-    public long size() {
-        return 0;
-    }
 }
