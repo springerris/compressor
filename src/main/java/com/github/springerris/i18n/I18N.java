@@ -96,72 +96,72 @@ public final class I18N {
             .ru("Отправить по SFTP")
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_TITLE = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_TITLE = builder()
             .en("Connect to SFTP")
             .ru("Поключение к SFTP")
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_CONFIRM = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_CONFIRM = builder()
             .en("Connect")
             .ru("Подключится")
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_CANCEL = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_CANCEL = builder()
             .en("Cancel")
             // TODO: ru
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_HOST = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_HOST = builder()
             .en("Host")
             .ru("Хост")
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_PORT = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_PORT = builder()
             .en("Port")
             .ru("Порт")
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_USERNAME = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_USERNAME = builder()
             .en("Username")
             .ru("Пользователь")
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_AUTHENTICATION = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_AUTHENTICATION = builder()
             .en("Authentication")
             // TODO: ru
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_NONE = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_NONE = builder()
             .en("None")
             // TODO: ru
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_NONE_DESC = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_NONE_DESC = builder()
             .en("No authentication will be performed")
             // TODO: ru
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_PASSWORD = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_PASSWORD = builder()
             .en("Password")
             .ru("Пароль")
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_PRIVATE_KEY = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_PRIVATE_KEY = builder()
             .en("Private Key")
             // TODO: ru
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_PRIVATE_KEY_DESC = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_PRIVATE_KEY_DESC = builder()
             .en("System will be searched for keys")
             // TODO: ru
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_ERROR_AUTH = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_ERROR_AUTH = builder()
             .en("Authentication failed. Provided password or key may be incorrect.")
             .ru("Логин и пароль не подошли под данный хост")
             .build();
 
-    public static final LangString WINDOW_EXPORT_SFTP_ERROR_IO = builder()
+    public static final LangString WINDOW_CONNECT_SFTP_ERROR_IO = builder()
             .en("Failed to connect to server. See log for more details.")
             .ru("Не удалось подключится к удалённому хосту")
             .build();

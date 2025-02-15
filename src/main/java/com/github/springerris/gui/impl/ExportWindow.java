@@ -122,7 +122,7 @@ public class ExportWindow extends ChoiceWindow {
     }
 
     private void onClickChoice2() {
-        SSHHandler handler = this.popup(SSHWindow.class);
+        SSHHandler handler = this.popup(SftpConnectWindow.class);
         if (handler == null) return; // User aborted
 
         // TODO

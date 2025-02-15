@@ -65,7 +65,7 @@ public class ImportWindow extends ChoiceWindow {
     }
 
     private void onClickChoice1() {
-        this.popup(YanFilesWindow.class);
+        this.popup(YandiskBrowseWindow.class);
     }
 
     private void onClickChoice2() {

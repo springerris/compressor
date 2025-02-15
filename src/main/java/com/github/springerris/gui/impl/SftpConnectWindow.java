@@ -19,7 +19,12 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.logging.Level;
 
-public class SSHWindow extends BorderWindow implements Modal<SSHHandler> {
+/**
+ * Previously named SSHWindow.
+ * A popup window that establishes an SSHHandler. The client should block until this popup closes
+ * and use the {@link #modalValue()} method to get the SSHHandler that was opened, or null if aborted.
+ */
+public class SftpConnectWindow extends BorderWindow implements Modal<SSHHandler> {
 
     private SSHHandler handler = null;
     private JTextField inputHost;
@@ -28,8 +33,8 @@ public class SSHWindow extends BorderWindow implements Modal<SSHHandler> {
     private JTextArea inputPassword;
     private JTabbedPane authPane;
 
-    public SSHWindow(@NotNull WindowContext ctx) {
-        super(ctx, I18N.WINDOW_EXPORT_SFTP_TITLE.get(), 255, 245);
+    public SftpConnectWindow(@NotNull WindowContext ctx) {
+        super(ctx, I18N.WINDOW_CONNECT_SFTP_TITLE.get(), 255, 245);
     }
 
     @Override
@@ -49,7 +54,7 @@ public class SSHWindow extends BorderWindow implements Modal<SSHHandler> {
 
         JTextField inputHost = new JTextField();
         form.add(
-                new JLabel(I18N.WINDOW_EXPORT_SFTP_HOST.get()),
+                new JLabel(I18N.WINDOW_CONNECT_SFTP_HOST.get()),
                 constraints(0, 0, 5, 1)
                         .padding(2)
                         .anchor(-1, 0)
@@ -73,7 +78,7 @@ public class SSHWindow extends BorderWindow implements Modal<SSHHandler> {
         JFormattedTextField inputPort = new JFormattedTextField(formatter);
         inputPort.setText("22");
         form.add(
-                new JLabel(I18N.WINDOW_EXPORT_SFTP_PORT.get()),
+                new JLabel(I18N.WINDOW_CONNECT_SFTP_PORT.get()),
                 constraints(5, 0, 1, 1)
                         .padding(2)
                         .anchor(1, 0)
@@ -89,7 +94,7 @@ public class SSHWindow extends BorderWindow implements Modal<SSHHandler> {
 
         JTextField inputUsername = new JTextField();
         form.add(
-                new JLabel(I18N.WINDOW_EXPORT_SFTP_USERNAME.get()),
+                new JLabel(I18N.WINDOW_CONNECT_SFTP_USERNAME.get()),
                 constraints(0, 2, 6, 1)
                         .padding(2)
                         .anchor(-1, 0)
@@ -106,7 +111,7 @@ public class SSHWindow extends BorderWindow implements Modal<SSHHandler> {
         JTabbedPane authPane = new JTabbedPane();
         this.setupAuthPane(authPane);
         form.add(
-                new JLabel(I18N.WINDOW_EXPORT_SFTP_AUTHENTICATION.get()),
+                new JLabel(I18N.WINDOW_CONNECT_SFTP_AUTHENTICATION.get()),
                 constraints(0, 4, 6, 1)
                         .padding(2)
                         .anchor(-1, 0)
@@ -138,36 +143,36 @@ public class SSHWindow extends BorderWindow implements Modal<SSHHandler> {
         JPanel panelNone = new JPanel();
         panelNone.setLayout(new BorderLayout());
         panelNone.add(
-                new JLabel(I18N.WINDOW_EXPORT_SFTP_NONE_DESC.get(), JLabel.CENTER),
+                new JLabel(I18N.WINDOW_CONNECT_SFTP_NONE_DESC.get(), JLabel.CENTER),
                 BorderLayout.CENTER
         );
-        pane.addTab(I18N.WINDOW_EXPORT_SFTP_NONE.get(), panelNone);
+        pane.addTab(I18N.WINDOW_CONNECT_SFTP_NONE.get(), panelNone);
 
         JPanel panelPassword = new JPanel();
         panelPassword.setLayout(new GridLayout(1, 1));
         JTextArea areaPassword = new JTextArea();
         panelPassword.add(areaPassword);
-        pane.addTab(I18N.WINDOW_EXPORT_SFTP_PASSWORD.get(), panelPassword);
+        pane.addTab(I18N.WINDOW_CONNECT_SFTP_PASSWORD.get(), panelPassword);
         this.inputPassword = areaPassword;
 
         JPanel panelPrivateKey = new JPanel();
         panelPrivateKey.setLayout(new BorderLayout());
         panelPrivateKey.add(
-                new JLabel(I18N.WINDOW_EXPORT_SFTP_PRIVATE_KEY_DESC.get(), JLabel.CENTER),
+                new JLabel(I18N.WINDOW_CONNECT_SFTP_PRIVATE_KEY_DESC.get(), JLabel.CENTER),
                 BorderLayout.CENTER
         );
-        pane.addTab(I18N.WINDOW_EXPORT_SFTP_PRIVATE_KEY.get(), panelPrivateKey);
+        pane.addTab(I18N.WINDOW_CONNECT_SFTP_PRIVATE_KEY.get(), panelPrivateKey);
     }
 
     private void setupFooter() {
         JPanel footer = new JPanel();
         footer.setLayout(new FlowLayout(FlowLayout.CENTER, 8, 2));
 
-        JButton btnConnect = new JButton(I18N.WINDOW_EXPORT_SFTP_CONFIRM.get());
+        JButton btnConnect = new JButton(I18N.WINDOW_CONNECT_SFTP_CONFIRM.get());
         footer.add(btnConnect);
         btnConnect.addActionListener(this::onClickConnect);
 
-        JButton btnCancel = new JButton(I18N.WINDOW_EXPORT_SFTP_CANCEL.get());
+        JButton btnCancel = new JButton(I18N.WINDOW_CONNECT_SFTP_CANCEL.get());
         footer.add(btnCancel);
         btnCancel.addActionListener(this::onClickCancel);
 
@@ -193,10 +198,10 @@ public class SSHWindow extends BorderWindow implements Modal<SSHHandler> {
                 if (close) handler.close();
             }
         } catch (UserAuthException e) {
-            this.showError(I18N.WINDOW_EXPORT_SFTP_ERROR_AUTH);
+            this.showError(I18N.WINDOW_CONNECT_SFTP_ERROR_AUTH);
         } catch (IOException e) {
             this.ctx.logger().log(Level.WARNING, "Failed to create SSH connection", e);
-            this.showError(I18N.WINDOW_EXPORT_SFTP_ERROR_IO);
+            this.showError(I18N.WINDOW_CONNECT_SFTP_ERROR_IO);
         }
         this.complete(null);
     }

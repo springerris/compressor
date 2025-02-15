@@ -25,13 +25,18 @@ import java.util.List;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-public class YanFilesWindow extends BorderWindow implements Modal.Nullary {
+/**
+ * Previously named YanFilesWindow ( ¬_¬)
+ * @deprecated Days are numbered for obvious reasons
+ */
+@Deprecated
+public class YandiskBrowseWindow extends BorderWindow implements Modal.Nullary {
 
     private List<Node> yanFiles;
     private DefaultListModel<String> list;
     private JList<String> fileList;
 
-    public YanFilesWindow(@NotNull WindowContext ctx) {
+    public YandiskBrowseWindow(@NotNull WindowContext ctx) {
         super(ctx, I18N.WINDOW_IMPORT_YANDEX_TITLE.get(), 300, 500);
     }
 
