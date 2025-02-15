@@ -3,7 +3,9 @@ package com.github.springerris.gui.impl;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.ChoiceWindow;
 import com.github.springerris.i18n.I18N;
-import com.github.springerris.util.YanHandler;
+import com.github.springerris.token.TokenType;
+import io.github.wasabithumb.yandisk4j.YanDisk;
+import io.github.wasabithumb.yandisk4j.node.accessor.NodeUploader;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -88,8 +90,30 @@ public class ExportWindow extends ChoiceWindow {
     }
 
     private void onClickChoice1() {
-        YanHandler yh = new YanHandler(this.ctx, this);
-        yh.upload(this.passwordPrompt(true));
+        YanDisk yd = YanDisk.yanDisk(this.ctx.tokens().get(TokenType.YANDEX_DISK));
+        String password = this.passwordPrompt(true);
+
+        String zipName = JOptionPane.showInputDialog(I18N.SEND_PICK_NAME.get());
+        if (zipName == null || zipName.isBlank()) {
+            // TODO: something will go here
+            return;
+        }
+
+        yd.mkdir("disk:/.archives", true);
+
+        String ext = (password == null) ? ".zip" : ".zip.m64";
+        NodeUploader nu = yd.upload("disk:/.archives/" + zipName + ext);
+        try (OutputStream os = nu.open()) {
+            this.ctx.archive().write(os, password);
+        } catch (IOException ex) {
+            this.ctx.logger().log(Level.SEVERE, "Ошибка работы с сервисом Yandex Disk", ex);
+            this.showError("""
+                    Ошибка работы с сервисом Yandex Disk. Проверьте: \
+                    1) Есть ли у вас доступ к интернету              \
+                    2) Доступен ли сервис Yandex на данный момент"""
+            );
+            System.exit(1);
+        }
     }
 
     private void onClickChoice2() {

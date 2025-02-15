@@ -3,34 +3,31 @@ package com.github.springerris.gui.impl;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.BorderWindow;
 import com.github.springerris.i18n.I18N;
-import com.github.springerris.util.YanHandler;
+import com.github.springerris.token.TokenType;
+import io.github.wasabithumb.yandisk4j.YanDisk;
+import io.github.wasabithumb.yandisk4j.except.YanDiskException;
 import io.github.wasabithumb.yandisk4j.node.Node;
+import io.github.wasabithumb.yandisk4j.node.accessor.NodeDownloader;
+import io.github.wasabithumb.yandisk4j.util.PaginatedResult;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class YanFilesWindow extends BorderWindow {
 
-    private static YanHandler YH = null;
-    private static synchronized YanHandler yh(WindowContext ctx, YanFilesWindow window) {
-        YanHandler yh = YH;
-        if (yh == null) {
-            yh = new YanHandler(ctx, window);
-            YH = yh;
-        }
-        return yh;
-    }
-
-    //
-
-    private Node zipNode;
     private List<Node> yanFiles;
     private DefaultListModel<String> list;
+    private JList<String> fileList;
 
     public YanFilesWindow(WindowContext ctx) {
         super(ctx, I18N.WINDOW_IMPORT_YANDEX_TITLE.get(), 300, 500);
@@ -44,10 +41,6 @@ public class YanFilesWindow extends BorderWindow {
         return password;
     }
 
-    private YanHandler yh() {
-        return yh(this.ctx, this);
-    }
-
     @Override
     protected void setupContent() {
         this.list = new DefaultListModel<>();
@@ -56,35 +49,63 @@ public class YanFilesWindow extends BorderWindow {
         ScrollPane sp = new ScrollPane();
         sp.add(fileList);
         this.addElement(sp, BorderLayout.CENTER);
-
-        fileList.addListSelectionListener(arg0 -> {
-            if (!arg0.getValueIsAdjusting()) {
-                System.out.println(this.list.get(fileList.getSelectedIndex()));
-                this.zipNode = this.yanFiles.get(fileList.getSelectedIndex());
-                JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-                jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-                int r = jfc.showOpenDialog(null);
-                if (r != JFileChooser.APPROVE_OPTION) return;
-                File dir = jfc.getSelectedFile();
-                this.setVisible(false);
-                System.out.println(dir);
-                System.out.println(Paths.get(dir.toString(), this.zipNode.name()));
-                File newZip = new File(Paths.get(dir.toString(), this.zipNode.name()).toString());
-                try {
-                    this.yh().download(this.zipNode, newZip);
-                    this.ctx.loadArchive(newZip.toPath(), this::passwordPrompt);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+        fileList.addListSelectionListener(this::onSelect);
+        this.fileList = fileList;
     }
 
-    public void fillList() {
-        this.yanFiles = this.yh().listFiles();
+    private void fillList() {
+        YanDisk yd = YanDisk.yanDisk(this.ctx.tokens().get(TokenType.YANDEX_DISK));
+
+        PaginatedResult<Node> result;
+        List<Node> nodes = new ArrayList<>();
+        try {
+            result = yd.list("disk:/.archives");
+            for (Node n : result) nodes.add(n);
+        } catch (YanDiskException ignored) { }
+
+        this.yanFiles = nodes;
         for (Node n : this.yanFiles) {
             this.list.addElement(n.name());
+        }
+    }
+
+    private void onSelect(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            System.out.println(this.list.get(this.fileList.getSelectedIndex()));
+            Node zipNode = this.yanFiles.get(this.fileList.getSelectedIndex());
+            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+            int r = jfc.showOpenDialog(null);
+            if (r != JFileChooser.APPROVE_OPTION) return;
+            File dir = jfc.getSelectedFile();
+            this.setVisible(false);
+
+            this.onSelect0(zipNode, dir);
+        }
+    }
+
+    private void onSelect0(Node zipNode, File dir) {
+        System.out.println(dir);
+        System.out.println(Paths.get(dir.toString(), zipNode.name()));
+        File newZip = new File(Paths.get(dir.toString(), zipNode.name()).toString());
+        try {
+            YanDisk yd = YanDisk.yanDisk(this.ctx.tokens().get(TokenType.YANDEX_DISK));
+            NodeDownloader nd = yd.download(zipNode.path());
+            if (newZip.exists()) {
+                int result = JOptionPane.showConfirmDialog(
+                        null,
+                        I18N.RECEIVE_CONFLICT.get(),
+                        I18N.POPUP_INFO.get(),
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result != JOptionPane.YES_OPTION) return;
+            }
+            Files.copy(nd.open(), newZip.toPath(), REPLACE_EXISTING);
+            this.ctx.loadArchive(newZip.toPath(), this::passwordPrompt);
+        } catch (IOException e) {
+            // TODO: Better logging
+            e.printStackTrace();
         }
     }
 

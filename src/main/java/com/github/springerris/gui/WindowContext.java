@@ -3,6 +3,7 @@
 package com.github.springerris.gui;
 
 import com.github.springerris.archive.Archive;
+import com.github.springerris.token.TokenStore;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -17,18 +18,24 @@ import java.util.logging.Logger;
 public class WindowContext {
 
     private final Logger logger;
+    private final TokenStore tokens;
     private Archive archive;
     private CompletableFuture<?> activeTask = null;
 
-    public WindowContext(Logger logger, Archive archive) {
+    public WindowContext(Logger logger) {
         this.logger = logger;
-        this.archive = archive;
+        this.tokens = new TokenStore(logger);
+        this.archive = new Archive();
     }
 
     //
 
     public Logger logger() {
         return this.logger;
+    }
+
+    public TokenStore tokens() {
+        return this.tokens;
     }
 
     /**
