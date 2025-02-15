@@ -2,6 +2,7 @@ package com.github.springerris.gui;
 
 import com.github.springerris.i18n.I18N;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NonBlocking;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -52,9 +53,11 @@ public abstract class Window extends JFrame {
         return JFrame.DISPOSE_ON_CLOSE;
     }
 
+    @NonBlocking
     @ApiStatus.OverrideOnly
     protected abstract void setupLayout();
 
+    @NonBlocking
     @ApiStatus.OverrideOnly
     protected abstract void setupContent();
 

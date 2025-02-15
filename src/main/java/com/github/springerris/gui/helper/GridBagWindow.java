@@ -2,12 +2,21 @@ package com.github.springerris.gui.helper;
 
 import com.github.springerris.gui.Window;
 import com.github.springerris.gui.WindowContext;
+import com.github.springerris.util.GridBagConstraintsBuilder;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
 /** Класс, наследующий Window, с реализацией специфического расположения элементов */
 public abstract class GridBagWindow extends Window {
+
+    @Contract("-> new")
+    protected static @NotNull GridBagConstraintsBuilder constraints() {
+        return new GridBagConstraintsBuilder();
+    }
+
+    //
 
     public GridBagWindow(
             @NotNull WindowContext ctx,
@@ -26,23 +35,12 @@ public abstract class GridBagWindow extends Window {
         contentPane.setLayout(new GridBagLayout());
     }
 
-    protected void addElement(int gridx, int gridy, int width, @NotNull Component comp) {
-        this.addElement(gridx, gridy, width, comp, GridBagConstraints.VERTICAL);
+    protected void addElement(@NotNull Component component, @NotNull GridBagConstraints constraints) {
+        this.getContentPane().add(component, constraints);
     }
 
-    protected void addElement(int gridx, int gridy, int width, @NotNull Component comp, int fill) {
-        this.addElement(gridx, gridy, width, 1, comp, fill);
-    }
-
-    protected void addElement(int gridx, int gridy, int width, int height, @NotNull Component comp, int fill) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = fill;
-        c.weightx = 0.1d;
-        c.gridx = gridx;
-        c.gridy = gridy;
-        c.gridwidth = width;
-        c.gridheight = height;
-        this.getContentPane().add(comp, c);
+    protected void addElement(@NotNull Component component, @NotNull GridBagConstraintsBuilder constraintsBuilder) {
+        this.addElement(component, constraintsBuilder.build());
     }
 
 }

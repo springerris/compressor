@@ -6,7 +6,6 @@ import com.github.springerris.i18n.I18N;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.CompletableFuture;
 
@@ -28,17 +27,21 @@ public class AwaitingWindow extends GridBagWindow {
 
     //
 
+
+    @Override
+    protected int defaultCloseOperation() {
+        return JFrame.DO_NOTHING_ON_CLOSE;
+    }
+
     @Override
     protected void setupContent() {
         JLabel label = new JLabel(I18N.WINDOW_AWAITING_TEXT.get());
-        this.addElement(0, 0, 1, 1, label, GridBagConstraints.VERTICAL);
-
+        this.addElement(label, constraints().dimensions(0, 0, 1, 1).fill(false, true));
         this.text = label;
 
         JButton btn = new JButton(I18N.WINDOW_AWAITING_CONTINUE.get());
         btn.setEnabled(false);
-        this.addElement(0, 1, 1, 1, btn, GridBagConstraints.VERTICAL);
-
+        this.addElement(btn, constraints().dimensions(0, 1, 1, 1).fill(false, true));
         this.continueButton = btn;
         btn.addActionListener(this::onClickContinue);
     }

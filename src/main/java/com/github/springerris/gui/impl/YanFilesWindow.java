@@ -1,5 +1,6 @@
 package com.github.springerris.gui.impl;
 
+import com.github.springerris.gui.Modal;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.BorderWindow;
 import com.github.springerris.i18n.I18N;
@@ -24,7 +25,7 @@ import java.util.List;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-public class YanFilesWindow extends BorderWindow {
+public class YanFilesWindow extends BorderWindow implements Modal.Nullary {
 
     private List<Node> yanFiles;
     private DefaultListModel<String> list;

@@ -1,9 +1,11 @@
 package com.github.springerris.gui.impl;
 
+import com.github.springerris.archive.vfs.VFSEntity;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.ChoiceWindow;
 import com.github.springerris.i18n.I18N;
 import com.github.springerris.token.TokenType;
+import com.github.springerris.util.SSHHandler;
 import io.github.wasabithumb.yandisk4j.YanDisk;
 import io.github.wasabithumb.yandisk4j.node.accessor.NodeUploader;
 import org.jetbrains.annotations.Contract;
@@ -120,7 +122,23 @@ public class ExportWindow extends ChoiceWindow {
     }
 
     private void onClickChoice2() {
-        this.popup(SSHWindow.class);
+        SSHHandler handler = this.popup(SSHWindow.class);
+        if (handler == null) return; // User aborted
+
+        // TODO
+        // Alert the listing for debug purposes
+        try {
+            VFSEntity[] list = handler.vfs().list();
+            for (VFSEntity ent : list) {
+                this.showInfo((ent.isDirectory() ? "D" : "F") + " > " + ent.name());
+            }
+        } catch (IOException e) {
+            this.ctx.logger().log(Level.WARNING, "Unexpected error", e);
+        }
+
+        try {
+            handler.close();
+        } catch (IOException ignored) { }
     }
 
     //
