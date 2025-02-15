@@ -102,8 +102,13 @@ public final class I18N {
             .build();
 
     public static final LangString WINDOW_EXPORT_SFTP_CONFIRM = builder()
-            .en("Confirm")
+            .en("Connect")
             .ru("Подключится")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_CANCEL = builder()
+            .en("Cancel")
+            // TODO: ru
             .build();
 
     public static final LangString WINDOW_EXPORT_SFTP_HOST = builder()
@@ -121,9 +126,34 @@ public final class I18N {
             .ru("Пользователь")
             .build();
 
+    public static final LangString WINDOW_EXPORT_SFTP_AUTHENTICATION = builder()
+            .en("Authentication")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_NONE = builder()
+            .en("None")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_NONE_DESC = builder()
+            .en("No authentication will be performed")
+            // TODO: ru
+            .build();
+
     public static final LangString WINDOW_EXPORT_SFTP_PASSWORD = builder()
             .en("Password")
             .ru("Пароль")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_PRIVATE_KEY = builder()
+            .en("Private Key")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_PRIVATE_KEY_DESC = builder()
+            .en("System will be searched for keys")
+            // TODO: ru
             .build();
 
     public static final LangString WINDOW_EXPORT_SFTP_ERROR_AUTH = builder()
