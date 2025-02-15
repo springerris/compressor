@@ -126,6 +126,16 @@ public final class I18N {
             .ru("Пароль")
             .build();
 
+    public static final LangString WINDOW_EXPORT_SFTP_ERROR_AUTH = builder()
+            .en("Authentication failed. Provided password or key may be incorrect.")
+            .ru("Логин и пароль не подошли под данный хост")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_ERROR_IO = builder()
+            .en("Failed to connect to server. See log for more details.")
+            .ru("Не удалось подключится к удалённому хосту")
+            .build();
+
     public static final LangString WINDOW_IMPORT_TITLE = builder()
             .en("Import")
             .ru("Импортировать")

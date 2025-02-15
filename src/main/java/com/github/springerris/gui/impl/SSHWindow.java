@@ -4,12 +4,17 @@ import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.GridBagWindow;
 import com.github.springerris.i18n.I18N;
 import com.github.springerris.util.SSHHandler;
+import net.schmizz.sshj.sftp.RemoteResourceInfo;
+import net.schmizz.sshj.userauth.UserAuthException;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
-import java.awt.*;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.List;
+import java.util.logging.Level;
 
 import static java.awt.GridBagConstraints.HORIZONTAL;
 
@@ -60,12 +65,22 @@ public class SSHWindow extends GridBagWindow {
     }
 
     private void onConfirm(ActionEvent ignored) {
-        SSHHandler sshHandler = new SSHHandler(
-                this.userField.getText(),
-                this.pwdField.getText(),
-                this.hostField.getText(),
-                ((Number) this.portField.getValue()).intValue()
-        );
+        String host = this.hostField.getText();
+        int port = ((Number) this.portField.getValue()).intValue();
+
+        try (SSHHandler handler = new SSHHandler(host, port)) {
+            handler.connect(this.userField.getText(), this.pwdField.getText());
+
+            List<RemoteResourceInfo> files = handler.list();
+            for (RemoteResourceInfo f : files) {
+                this.showInfo(f.getPath());
+            }
+        } catch (UserAuthException e) {
+            this.showError(I18N.WINDOW_EXPORT_SFTP_ERROR_AUTH.get());
+        } catch (IOException e) {
+            this.ctx.logger().log(Level.WARNING, "Failed to create SSH connection", e);
+            this.showError(I18N.WINDOW_EXPORT_SFTP_ERROR_IO.get());
+        }
     }
 
 }
