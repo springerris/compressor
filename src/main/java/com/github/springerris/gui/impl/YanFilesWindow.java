@@ -16,9 +16,20 @@ import java.util.List;
 
 public class YanFilesWindow extends BorderWindow {
 
+    private static YanHandler YH = null;
+    private static synchronized YanHandler yh(WindowContext ctx, YanFilesWindow window) {
+        YanHandler yh = YH;
+        if (yh == null) {
+            yh = new YanHandler(ctx, window);
+            YH = yh;
+        }
+        return yh;
+    }
+
+    //
+
     private Node zipNode;
     private List<Node> yanFiles;
-    private YanHandler yh;
     private DefaultListModel<String> list;
 
     public YanFilesWindow(WindowContext ctx) {
@@ -33,9 +44,14 @@ public class YanFilesWindow extends BorderWindow {
         return password;
     }
 
+    private YanHandler yh() {
+        return yh(this.ctx, this);
+    }
+
     @Override
     protected void setupContent() {
         this.list = new DefaultListModel<>();
+        this.fillList();
         JList<String> fileList = new JList<>(this.list);
         ScrollPane sp = new ScrollPane();
         sp.add(fileList);
@@ -56,7 +72,7 @@ public class YanFilesWindow extends BorderWindow {
                 System.out.println(Paths.get(dir.toString(), this.zipNode.name()));
                 File newZip = new File(Paths.get(dir.toString(), this.zipNode.name()).toString());
                 try {
-                    this.yh.download(this.zipNode, newZip);
+                    this.yh().download(this.zipNode, newZip);
                     this.ctx.loadArchive(newZip.toPath(), this::passwordPrompt);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -65,14 +81,8 @@ public class YanFilesWindow extends BorderWindow {
         });
     }
 
-    // TODO: This is cancer.
-    @Deprecated
-    public void setYh(YanHandler yh) {
-        this.yh = yh;
-    }
-
     public void fillList() {
-        this.yanFiles = this.yh.listFiles();
+        this.yanFiles = this.yh().listFiles();
         for (Node n : this.yanFiles) {
             this.list.addElement(n.name());
         }

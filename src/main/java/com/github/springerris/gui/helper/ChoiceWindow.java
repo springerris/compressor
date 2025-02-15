@@ -1,5 +1,6 @@
 package com.github.springerris.gui.helper;
 
+import com.github.springerris.gui.Window;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.impl.AwaitingWindow;
 import com.github.springerris.gui.impl.MainWindow;
@@ -18,8 +19,7 @@ public abstract class ChoiceWindow extends GridBagWindow {
     public ChoiceWindow(WindowContext ctx, String title, int initialWidth, int initialHeight) {
         super(ctx, title, initialWidth, initialHeight);
 
-        // When close button is pressed, go to MainWindow instead of exiting
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        // When close button is pressed, go to MainWindow
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -46,6 +46,31 @@ public abstract class ChoiceWindow extends GridBagWindow {
         }
     }
 
+    /**
+     * Utility that creates a new window which inherits the current context and blocks until it closes;
+     * either by the user pressing the close button or the window calling {@link Window#dispose()} on itself.
+     */
+    protected final void popup(Class<? extends Window> clazz) {
+        Window window = construct(clazz, this.ctx);
+        Object mutex = new Object();
+
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                synchronized (mutex) {
+                    mutex.notify();
+                }
+            }
+        });
+
+        synchronized (mutex) {
+            window.setVisible(true);
+            try {
+                mutex.wait();
+            } catch (InterruptedException ignored) { }
+        }
+    }
+
     //
 
     private record ClickHandler(
@@ -57,7 +82,7 @@ public abstract class ChoiceWindow extends GridBagWindow {
         public void actionPerformed(ActionEvent e) {
             CompletableFuture<Object> future = new CompletableFuture<>();
             Thread t = new Thread(() -> this.execute(future));
-            t.setName("Choice Execution Thread");
+            t.setName("Choice Executor Thread");
             t.start();
 
             this.parent.ctx.setActiveTask(future);

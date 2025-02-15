@@ -3,12 +3,10 @@ package com.github.springerris.gui.impl;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.ChoiceWindow;
 import com.github.springerris.i18n.I18N;
-import com.github.springerris.util.YanHandler;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -66,11 +64,7 @@ public class ImportWindow extends ChoiceWindow {
     }
 
     private void onClickChoice1() {
-        YanHandler yh = new YanHandler(this.ctx, this);
-        YanFilesWindow yfw = new YanFilesWindow(this.ctx);
-        yfw.setYh(yh);
-        yfw.fillList();
-        yfw.setVisible(true);
+        this.popup(YanFilesWindow.class);
     }
 
     private void onClickChoice2() {

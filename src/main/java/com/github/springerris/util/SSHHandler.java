@@ -1,5 +1,6 @@
 package com.github.springerris.util;
 
+import com.github.springerris.archive.vfs.VFS;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -91,6 +92,14 @@ public class SSHHandler implements Closeable {
     public List<RemoteResourceInfo> list() throws IOException {
         this.assertOpen();
         return this.transferClient.ls("./");
+    }
+
+    /**
+     * Returns a VFS which represents the content of the active SFTP connection.
+     */
+    public VFS vfs() {
+        this.assertOpen();
+        return VFS.sftp(this.transferClient);
     }
 
     //

@@ -2,7 +2,9 @@ package com.github.springerris.archive.vfs;
 
 import com.github.springerris.archive.vfs.cb.CorkboardVFS;
 import com.github.springerris.archive.vfs.fs.FilesystemVFS;
+import com.github.springerris.archive.vfs.sftp.SFTPVFS;
 import com.github.springerris.archive.vfs.zip.ZipVFS;
+import net.schmizz.sshj.sftp.SFTPClient;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +50,13 @@ public interface VFS {
      */
     static VFS zip(Path path) {
         return zip(path, null);
+    }
+
+    /**
+     * Creates a VFS which represents the content served through the connection of the specified SFTP client.
+     */
+    static VFS sftp(SFTPClient client) {
+        return new SFTPVFS(client);
     }
 
     //

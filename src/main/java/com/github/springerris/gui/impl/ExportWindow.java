@@ -93,8 +93,7 @@ public class ExportWindow extends ChoiceWindow {
     }
 
     private void onClickChoice2() {
-        SSHWindow sshWindow = new SSHWindow(this.ctx);
-        sshWindow.setVisible(true);
+        this.popup(SSHWindow.class);
     }
 
     //

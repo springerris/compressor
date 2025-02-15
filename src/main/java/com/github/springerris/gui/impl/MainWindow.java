@@ -189,6 +189,11 @@ public class MainWindow extends BorderWindow {
     //
 
     @Override
+    protected int defaultCloseOperation() {
+        return JFrame.EXIT_ON_CLOSE;
+    }
+
+    @Override
     protected void setupContent() {
         JPanel header = new JPanel();
         header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
