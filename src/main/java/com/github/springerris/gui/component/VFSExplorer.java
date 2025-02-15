@@ -3,6 +3,9 @@ package com.github.springerris.gui.component;
 import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
 import com.github.springerris.util.Listeners;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +23,7 @@ public class VFSExplorer extends JPanel {
     private final DefaultListModel<VFSEntity> entries;
     private final VFSEntityList entriesList;
 
-    public VFSExplorer(VFS vfs) {
+    public VFSExplorer(@NotNull VFS vfs) {
         this.vfs = vfs;
         this.path = this.findDeepestRichPath();
         this.setLayout(new BorderLayout());
@@ -54,12 +57,12 @@ public class VFSExplorer extends JPanel {
     //
 
     /** Gets the active path of the explorer */
-    public String getPath() {
+    public @NotNull String getPath() {
         return this.path;
     }
 
     /** Sets the active path of the explorer */
-    public void setPath(String path) {
+    public void setPath(@Nullable String path) {
         if (path == null) path = "";
         if (this.path.equals(path)) return;
         this.path = path;
@@ -137,7 +140,8 @@ public class VFSExplorer extends JPanel {
         }
     }
 
-    protected void onClickDirectory(VFSEntity dir, boolean doubleClick) {
+    @ApiStatus.OverrideOnly
+    protected void onClickDirectory(@NotNull VFSEntity dir, boolean doubleClick) {
         if (!doubleClick) return;
 
         String newPath = this.path;
@@ -153,17 +157,18 @@ public class VFSExplorer extends JPanel {
         this.setPath(newPath);
     }
 
-    protected void onClickFile(VFSEntity file, boolean doubleClick) { }
+    @ApiStatus.OverrideOnly
+    protected void onClickFile(@NotNull VFSEntity file, boolean doubleClick) { }
 
     //
 
-    private String findDeepestRichPath() {
+    private @NotNull String findDeepestRichPath() {
         StringBuilder sb = new StringBuilder();
         this.findDeepestRichPath0(sb, this.vfs);
         return sb.toString();
     }
 
-    private void findDeepestRichPath0(StringBuilder sb, VFS head) {
+    private void findDeepestRichPath0(@NotNull StringBuilder sb, @NotNull VFS head) {
         VFSEntity[] ents;
         try {
             ents = head.list();

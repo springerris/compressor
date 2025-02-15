@@ -3,6 +3,8 @@ package com.github.springerris.archive.vfs.fs;
 import com.github.springerris.archive.vfs.AbstractVFS;
 import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +17,7 @@ import java.util.stream.Stream;
 /**
  * A {@link VFS} representing a directory on the actual filesystem
  */
+@ApiStatus.Internal
 public class FilesystemVFS extends AbstractVFS {
 
     private final Path root;
@@ -36,7 +39,7 @@ public class FilesystemVFS extends AbstractVFS {
     }
 
     @Override
-    public VFS sub(String name) {
+    public @NotNull VFS sub(@NotNull String name) {
         Path target = this.resolve(name);
         if (!Files.isDirectory(target))
             throw new IllegalArgumentException("Path \"" + target.toAbsolutePath() + "\" is not a directory");
@@ -44,7 +47,7 @@ public class FilesystemVFS extends AbstractVFS {
     }
 
     @Override
-    public VFSEntity[] list() throws IOException {
+    public @NotNull VFSEntity @NotNull [] list() throws IOException {
         try (Stream<Path> files = Files.list(this.root)) {
             return files
                     .map(FilesystemVFSEntity::new)
@@ -54,7 +57,7 @@ public class FilesystemVFS extends AbstractVFS {
     }
 
     @Override
-    public VFSEntity stat(String name) {
+    public @NotNull VFSEntity stat(@NotNull String name) {
         Path p = this.resolve(name);
         if (!Files.exists(p))
             throw new IllegalArgumentException("Path \"" + p.toAbsolutePath() + "\" does not exist");
@@ -62,27 +65,27 @@ public class FilesystemVFS extends AbstractVFS {
     }
 
     @Override
-    public boolean exists(String name) {
+    public boolean exists(@NotNull String name) {
         return Files.exists(this.resolve(name));
     }
 
     @Override
-    public InputStream read(String name) throws IOException {
+    public @NotNull InputStream read(@NotNull String name) throws IOException {
         return Files.newInputStream(this.resolve(name), StandardOpenOption.READ);
     }
 
     @Override
-    public OutputStream write(String name) throws IOException {
+    public @NotNull OutputStream write(@NotNull String name) throws IOException {
         return Files.newOutputStream(this.resolve(name), StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     @Override
-    public void createDirectory(String name) throws IOException {
+    public void createDirectory(@NotNull String name) throws IOException {
         Files.createDirectory(this.resolve(name));
     }
 
     @Override
-    public void mount(String localPath, String remotePath, VFS remote) throws UnsupportedOperationException {
+    public void mount(@NotNull String localPath, @NotNull String remotePath, @NotNull VFS remote) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Cannot mount to FilesystemVFS");
     }
 

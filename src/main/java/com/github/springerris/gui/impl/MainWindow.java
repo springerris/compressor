@@ -4,6 +4,7 @@ import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.component.VFSExplorer;
 import com.github.springerris.gui.helper.BorderWindow;
 import com.github.springerris.i18n.I18N;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -16,7 +17,7 @@ public class MainWindow extends BorderWindow {
 
     private VFSExplorer explorer;
 
-    public MainWindow(WindowContext ctx) {
+    public MainWindow(@NotNull WindowContext ctx) {
         super(ctx, I18N.WINDOW_MAIN_TITLE.get(), 800, 500);
     }
 
@@ -83,7 +84,7 @@ public class MainWindow extends BorderWindow {
         }
 
         if (!this.ctx.archive().canAdd(p)) {
-            showError(I18N.WINDOW_MAIN_ERROR_ADD_FILE.get());
+            showError(I18N.WINDOW_MAIN_ERROR_ADD_FILE);
             return;
         }
 

@@ -3,6 +3,7 @@ package com.github.springerris.gui.impl;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.ChoiceWindow;
 import com.github.springerris.i18n.I18N;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -14,14 +15,14 @@ import java.util.logging.Level;
 
 public class ImportWindow extends ChoiceWindow {
 
-    public ImportWindow(WindowContext ctx) {
+    public ImportWindow(@NotNull WindowContext ctx) {
         super(ctx, I18N.WINDOW_IMPORT_TITLE.get(), 300, 200);
     }
 
     //
 
     @Override
-    protected String[] getChoices() {
+    protected @NotNull String @NotNull [] getChoices() {
         return new String[] {
                 I18N.WINDOW_IMPORT_OPTION_ZIP.get(),
                 I18N.WINDOW_IMPORT_OPTION_YANDEX.get(),
@@ -73,25 +74,21 @@ public class ImportWindow extends ChoiceWindow {
 
     //
 
-    private void loadArchive(Path p) {
+    private void loadArchive(@NotNull Path p) {
         try {
             this.ctx.loadArchive(p, this::passwordPrompt);
         } catch (IllegalArgumentException e) {
-            this.showError(I18N.WINDOW_IMPORT_ERROR_FORMAT.get());
+            this.showError(I18N.WINDOW_IMPORT_ERROR_FORMAT);
         } catch (IllegalStateException e) {
-            this.showError(I18N.WINDOW_IMPORT_ERROR_PASSWORD.get());
+            this.showError(I18N.WINDOW_IMPORT_ERROR_PASSWORD);
         } catch (IOException e) {
             this.ctx.logger().log(Level.WARNING, "Failed to extract", e);
             System.exit(1);
         }
     }
 
-    private String passwordPrompt() {
-        String password;
-        do {
-            password = JOptionPane.showInputDialog(I18N.STAGE_PASSWORD_PROMPT_ENTER.get());
-        } while (password.isBlank());
-        return password;
+    private @NotNull String passwordPrompt() {
+        return this.pester(I18N.STAGE_PASSWORD_PROMPT_ENTER);
     }
 
 }

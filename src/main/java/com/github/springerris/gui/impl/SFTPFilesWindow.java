@@ -2,7 +2,7 @@ package com.github.springerris.gui.impl;
 
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.BorderWindow;
-import com.github.springerris.i18n.I18N;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
@@ -11,17 +11,9 @@ public class SFTPFilesWindow extends BorderWindow {
     private boolean isDownloading = false;
     private DefaultListModel<String> list;
 
-    public SFTPFilesWindow(WindowContext ctx) {
+    public SFTPFilesWindow(@NotNull WindowContext ctx) {
         // TODO: Decide title & dimensions
         super(ctx, "Title", 500, 500);
-    }
-
-    private String passwordPrompt() {
-        String password;
-        do {
-            password = JOptionPane.showInputDialog(I18N.STAGE_PASSWORD_PROMPT_ENTER.get());
-        } while (password.isBlank());
-        return password;
     }
 
     @Override

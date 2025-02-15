@@ -1,5 +1,8 @@
 package com.github.springerris.util.tsv;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
@@ -40,7 +43,7 @@ public class TSVReader extends BufferedReader {
     private List<String> header = null;
     private List<String> row = null;
 
-    public TSVReader(Reader in, int expectedColumns) {
+    public TSVReader(@NotNull Reader in, int expectedColumns) {
         super(in);
         if (expectedColumns < 0)
             throw new IllegalArgumentException("expectedColumns may not be negative");
@@ -49,7 +52,7 @@ public class TSVReader extends BufferedReader {
 
     //
 
-    private List<String> readRowData() throws IOException {
+    private @Nullable List<String> readRowData() throws IOException {
         String line = this.readLine();
         if (line == null) return null;
 
@@ -79,7 +82,7 @@ public class TSVReader extends BufferedReader {
         return (data == null) ? -1 : data.size();
     }
 
-    public String readValue(int index) throws IndexOutOfBoundsException, IllegalStateException {
+    public @NotNull String readValue(int index) throws IndexOutOfBoundsException, IllegalStateException {
         if (this.row == null)
             throw new IllegalStateException("Call to readValue must follow successful call to readRow");
         if (index < 0 || index >= this.row.size())
@@ -87,7 +90,7 @@ public class TSVReader extends BufferedReader {
         return this.row.get(index);
     }
 
-    public String readValue(String key) throws IllegalArgumentException, IllegalStateException {
+    public @NotNull String readValue(String key) throws IllegalArgumentException, IllegalStateException {
         if (this.header == null)
             throw new IllegalArgumentException("Cannot read value by key without reading a header first");
 

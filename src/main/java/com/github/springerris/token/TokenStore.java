@@ -1,5 +1,9 @@
 package com.github.springerris.token;
 
+import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
+
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -15,13 +19,14 @@ public final class TokenStore {
     private final Logger logger;
     private final Map<TokenType, Optional<String>> map = new EnumMap<>(TokenType.class);
 
-    public TokenStore(Logger logger) {
+    public TokenStore(@NotNull Logger logger) {
         this.logger = logger;
     }
 
     //
 
-    public String get(TokenType type) {
+    @Blocking
+    public @UnknownNullability String get(@NotNull TokenType type) {
         Optional<String> value = this.map.get(type);
         if (value != null) return value.orElse(null);
 

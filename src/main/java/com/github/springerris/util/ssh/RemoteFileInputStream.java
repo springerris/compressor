@@ -1,6 +1,7 @@
 package com.github.springerris.util.ssh;
 
 import net.schmizz.sshj.sftp.RemoteFile;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,7 @@ public class RemoteFileInputStream extends InputStream {
     private final RemoteFile handle;
     private long offset;
 
-    public RemoteFileInputStream(RemoteFile handle) {
+    public RemoteFileInputStream(@NotNull RemoteFile handle) {
         this.handle = handle;
         this.offset = 0L;
     }
@@ -18,7 +19,7 @@ public class RemoteFileInputStream extends InputStream {
     //
 
     @Override
-    public int read(byte[] b, int off, int len) throws IOException {
+    public int read(byte @NotNull [] b, int off, int len) throws IOException {
         int read = this.handle.read(this.offset, b, off, len);
         if (read == -1) return -1;
         this.offset += read;

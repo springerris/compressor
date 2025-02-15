@@ -3,6 +3,8 @@ package com.github.springerris.archive.vfs.cb;
 import com.github.springerris.archive.vfs.AbstractVFS;
 import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +16,7 @@ import java.util.function.Function;
 /**
  * A {@link VFS} implementation which supports only directories and mounts.
  */
+@ApiStatus.Internal
 public class CorkboardVFS extends AbstractVFS implements VFSEntity {
 
     private final String name;
@@ -31,7 +34,7 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
     //
 
     @Override
-    public VFS sub(String name) {
+    public @NotNull VFS sub(@NotNull String name) {
         if (name.isEmpty()) return this;
         return this.splitPath(
                 name,
@@ -41,7 +44,7 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
     }
 
     @Override
-    public VFSEntity[] list() {
+    public @NotNull VFSEntity @NotNull [] list() {
         Collection<CorkboardVFSBranch> branches = this.contents.values();
         Iterator<CorkboardVFSBranch> iter = branches.iterator();
 
@@ -53,7 +56,7 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
     }
 
     @Override
-    public VFSEntity stat(String name) {
+    public @NotNull VFSEntity stat(@NotNull String name) {
         if (name.isEmpty()) throw new IllegalArgumentException("Cannot stat empty name");
         return this.splitPath(
                 name,
@@ -63,7 +66,7 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
     }
 
     @Override
-    public boolean exists(String name) {
+    public boolean exists(@NotNull String name) {
         if (name.isEmpty()) throw new IllegalArgumentException("Cannot stat empty name");
         return this.splitPath(
                 name,
@@ -74,7 +77,7 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
     }
 
     @Override
-    public InputStream read(String name) throws IOException {
+    public @NotNull InputStream read(@NotNull String name) throws IOException {
         if (name.isEmpty()) throw new IllegalArgumentException("Cannot open empty name");
         try {
             return this.splitPath(
@@ -88,7 +91,7 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
     }
 
     @Override
-    public OutputStream write(String name) throws IOException {
+    public @NotNull OutputStream write(@NotNull String name) throws IOException {
         if (name.isEmpty()) throw new IllegalArgumentException("Cannot open empty name");
         try {
             return this.splitPath(
@@ -102,7 +105,7 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
     }
 
     @Override
-    public void createDirectory(String name) {
+    public void createDirectory(@NotNull String name) {
         if (name.isEmpty()) throw new IllegalArgumentException("Cannot create directory with empty name");
         this.splitPath(
                 name,
@@ -112,7 +115,7 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
     }
 
     @Override
-    public void mount(String localPath, String remotePath, VFS remote) {
+    public void mount(@NotNull String localPath, @NotNull String remotePath, @NotNull VFS remote) {
         if (localPath.isEmpty()) throw new IllegalArgumentException("Cannot create mount point with empty name");
 
         int whereSlash = localPath.indexOf('/');
@@ -136,7 +139,7 @@ public class CorkboardVFS extends AbstractVFS implements VFSEntity {
     //
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return this.name;
     }
 

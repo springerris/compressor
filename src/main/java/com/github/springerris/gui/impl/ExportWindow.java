@@ -6,6 +6,9 @@ import com.github.springerris.i18n.I18N;
 import com.github.springerris.token.TokenType;
 import io.github.wasabithumb.yandisk4j.YanDisk;
 import io.github.wasabithumb.yandisk4j.node.accessor.NodeUploader;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -20,14 +23,14 @@ import java.util.logging.Level;
 
 public class ExportWindow extends ChoiceWindow {
 
-    public ExportWindow(WindowContext ctx) {
+    public ExportWindow(@NotNull WindowContext ctx) {
         super(ctx, I18N.WINDOW_EXPORT_TITLE.get(), 300, 200);
     }
 
     //
 
     @Override
-    protected String[] getChoices() {
+    protected @NotNull String @NotNull [] getChoices() {
         return new String[] {
                 I18N.WINDOW_EXPORT_OPTION_ZIP.get(),
                 I18N.WINDOW_EXPORT_OPTION_YANDEX.get(),
@@ -122,7 +125,8 @@ public class ExportWindow extends ChoiceWindow {
 
     //
 
-    private String passwordPrompt(boolean ask) {
+    @Contract("false -> !null")
+    private @Nullable String passwordPrompt(boolean ask) {
         if (ask) {
             int isProtected = JOptionPane.showConfirmDialog(
                     this,
@@ -133,12 +137,7 @@ public class ExportWindow extends ChoiceWindow {
             );
             if (isProtected != JOptionPane.YES_OPTION) return null;
         }
-
-        String password;
-        do {
-            password = JOptionPane.showInputDialog(I18N.STAGE_PASSWORD_PROMPT_ENTER.get());
-        } while (password.isBlank());
-        return password;
+        return this.pester(I18N.STAGE_PASSWORD_PROMPT_ENTER);
     }
 
 }

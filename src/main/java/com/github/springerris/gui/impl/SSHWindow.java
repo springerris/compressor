@@ -6,6 +6,7 @@ import com.github.springerris.i18n.I18N;
 import com.github.springerris.util.SSHHandler;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.userauth.UserAuthException;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.text.NumberFormatter;
@@ -25,7 +26,7 @@ public class SSHWindow extends GridBagWindow {
     private JTextField hostField;
     private JFormattedTextField portField;
 
-    public SSHWindow(WindowContext ctx) {
+    public SSHWindow(@NotNull WindowContext ctx) {
         super(ctx, I18N.WINDOW_EXPORT_SFTP_TITLE.get(), 500, 300);
     }
 
@@ -76,10 +77,10 @@ public class SSHWindow extends GridBagWindow {
                 this.showInfo(f.getPath());
             }
         } catch (UserAuthException e) {
-            this.showError(I18N.WINDOW_EXPORT_SFTP_ERROR_AUTH.get());
+            this.showError(I18N.WINDOW_EXPORT_SFTP_ERROR_AUTH);
         } catch (IOException e) {
             this.ctx.logger().log(Level.WARNING, "Failed to create SSH connection", e);
-            this.showError(I18N.WINDOW_EXPORT_SFTP_ERROR_IO.get());
+            this.showError(I18N.WINDOW_EXPORT_SFTP_ERROR_IO);
         }
     }
 

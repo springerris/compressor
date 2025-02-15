@@ -1,17 +1,18 @@
 package com.github.springerris.archive.vfs.fs;
 
 import com.github.springerris.archive.vfs.VFSEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public record FilesystemVFSEntity(
+record FilesystemVFSEntity(
         Path handle
 ) implements VFSEntity {
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return this.handle.getFileName().toString();
     }
 

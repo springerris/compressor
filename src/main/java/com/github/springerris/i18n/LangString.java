@@ -1,5 +1,8 @@
 package com.github.springerris.i18n;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -11,7 +14,8 @@ import java.util.Map;
  */
 public class LangString implements CharSequence {
 
-    public static Builder builder() {
+    @Contract("-> new")
+    public static @NotNull Builder builder() {
         return new Builder();
     }
 
@@ -20,14 +24,14 @@ public class LangString implements CharSequence {
     private final Map<Language, String> map;
     private final String active;
 
-    public LangString(Map<Language, String> map) {
+    public LangString(@NotNull Map<Language, String> map) {
         this.map = map;
         this.active = this.get(I18N.LANGUAGE);
     }
 
     //
 
-    public String get(Language language) {
+    public @NotNull String get(@NotNull Language language) {
         return this.map.getOrDefault(language, "???");
     }
 
@@ -35,7 +39,7 @@ public class LangString implements CharSequence {
      * Resolves this string against the {@link I18N#LANGUAGE active language}.
      * @see #get(Language)
      */
-    public String get() {
+    public @NotNull String get() {
         return this.active;
     }
 
@@ -52,14 +56,14 @@ public class LangString implements CharSequence {
     }
 
     @Override
-    public CharSequence subSequence(int i, int i1) {
+    public @NotNull CharSequence subSequence(int i, int i1) {
         return this.active.subSequence(i, i1);
     }
 
     //
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return this.active;
     }
 
@@ -85,20 +89,24 @@ public class LangString implements CharSequence {
 
         //
 
-        public Builder add(Language language, String value) {
+        @Contract("_, _ -> this")
+        public @NotNull Builder add(@NotNull Language language, @NotNull String value) {
             this.map.put(language, value);
             return this;
         }
 
-        public Builder en(String value) {
+        @Contract("_ -> this")
+        public @NotNull Builder en(@NotNull String value) {
             return this.add(Language.EN, value);
         }
 
-        public Builder ru(String value) {
+        @Contract("_ -> this")
+        public @NotNull Builder ru(@NotNull String value) {
             return this.add(Language.RU, value);
         }
 
-        public LangString build() {
+        @Contract("-> new")
+        public @NotNull LangString build() {
             return new LangString(this.map);
         }
 

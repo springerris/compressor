@@ -3,6 +3,7 @@ package com.github.springerris.gui.impl;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.GridBagWindow;
 import com.github.springerris.i18n.I18N;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +21,7 @@ public class AwaitingWindow extends GridBagWindow {
     private JButton continueButton;
     private boolean canContinue = false;
 
-    public AwaitingWindow(WindowContext ctx) {
+    public AwaitingWindow(@NotNull WindowContext ctx) {
         super(ctx, I18N.WINDOW_AWAITING_TITLE.get(), 340, 240);
         this.ctx.whenActiveTaskComplete(this::onComplete);
     }

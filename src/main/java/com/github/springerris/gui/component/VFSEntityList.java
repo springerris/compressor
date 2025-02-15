@@ -1,6 +1,7 @@
 package com.github.springerris.gui.component;
 
 import com.github.springerris.archive.vfs.VFSEntity;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,7 @@ import java.awt.*;
  */
 public class VFSEntityList extends JList<VFSEntity> {
 
-    public VFSEntityList(ListModel<VFSEntity> dataModel) {
+    public VFSEntityList(@NotNull ListModel<VFSEntity> dataModel) {
         super(dataModel);
         this.setCellRenderer(new CellRenderer());
     }
@@ -24,9 +25,9 @@ public class VFSEntityList extends JList<VFSEntity> {
         private static final ListCellRenderer<Object> DEFAULT = new DefaultListCellRenderer();
 
         @Override
-        public Component getListCellRendererComponent(
-                JList<? extends VFSEntity> jList,
-                VFSEntity ent,
+        public @NotNull Component getListCellRendererComponent(
+                @NotNull JList<? extends VFSEntity> jList,
+                @NotNull VFSEntity ent,
                 int i,
                 boolean b,
                 boolean b1

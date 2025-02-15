@@ -5,6 +5,9 @@ import com.github.springerris.archive.vfs.VFSEntity;
 import com.github.springerris.op.DiskOperation;
 import com.github.springerris.op.DiskOperationQueue;
 import io.github.wasabithumb.magma4j.Magma;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +36,11 @@ public final class Archive {
      * @throws IllegalArgumentException File is malformed (missing metadata)
      * @throws IllegalStateException    Password is incorrect
      */
-    public static Archive read(Path file, Supplier<String> password) throws IOException {
+    @Contract("_, _ -> new")
+    public static @NotNull Archive read(
+            @NotNull Path file,
+            @NotNull Supplier<String> password
+    ) throws IOException {
         byte[] key;
         boolean isZip;
         try (InputStream is = Files.newInputStream(file, StandardOpenOption.READ)) {
@@ -76,7 +83,7 @@ public final class Archive {
             (byte) 0x50, (byte) 0x4B, (byte) 0x03, (byte) 0x04
     };
 
-    private static boolean streamIsZip(InputStream is) throws IOException {
+    private static boolean streamIsZip(@NotNull InputStream is) throws IOException {
         int c;
         for (byte b : ZIP_HEADER) {
             c = is.read();
@@ -98,14 +105,17 @@ public final class Archive {
 
     //
 
-    public VFS files() {
+    public @NotNull VFS files() {
         return this.files;
     }
 
     /**
      * True if the path or any of its parents are not already contained within the root tree
      */
+    @Contract("null -> false")
     public boolean canAdd(Path path) {
+        if (path == null) return false;
+
         ArchiveRootInfo info = new ArchiveRootInfo(path);
         if (this.roots.contains(info)) return false;
 
@@ -127,6 +137,7 @@ public final class Archive {
     /**
      * Adds a filesystem path to include in the archive
      */
+    @Contract("null -> fail")
     public void add(Path path) {
         if (!this.canAdd(path))
             throw new IllegalArgumentException("Cannot add path \"" + path.toAbsolutePath() + "\", violates hierarchy");
@@ -147,7 +158,7 @@ public final class Archive {
      * @param os       Destination for the archive data
      * @param password If not null, data will be encrypted with this password
      */
-    public void write(OutputStream os, String password) throws IOException {
+    public void write(@NotNull OutputStream os, @Nullable String password) throws IOException {
         boolean close = false;
         if (password != null) {
             byte[] key = Magma.generateKeyFromPassword(password);
@@ -219,7 +230,7 @@ public final class Archive {
     /**
      * Prepares an operation queue that, when executed, would extract the archive.
      */
-    public DiskOperationQueue extract() throws IOException {
+    public @NotNull DiskOperationQueue extract() throws IOException {
         DiskOperationQueue ret = new DiskOperationQueue();
 
         for (ArchiveRootInfo root : this.roots) {

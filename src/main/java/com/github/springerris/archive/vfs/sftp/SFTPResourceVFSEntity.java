@@ -2,13 +2,14 @@ package com.github.springerris.archive.vfs.sftp;
 
 import com.github.springerris.archive.vfs.VFSEntity;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
+import org.jetbrains.annotations.NotNull;
 
-public record SFTPResourceVFSEntity(
+record SFTPResourceVFSEntity(
         RemoteResourceInfo handle
 ) implements VFSEntity {
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return this.handle.getName();
     }
 

@@ -1,5 +1,8 @@
 package com.github.springerris.archive;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -9,22 +12,22 @@ final class ArchiveRootInfo implements Comparable<ArchiveRootInfo> {
     private final Path path;
     private transient String entry;
 
-    public ArchiveRootInfo(Path path) {
+    public ArchiveRootInfo(@NotNull Path path) {
         this(path, null);
     }
 
-    public ArchiveRootInfo(Path path, String entry) {
+    public ArchiveRootInfo(@NotNull Path path, @Nullable String entry) {
         this.path = path;
         this.entry = entry;
     }
 
     //
 
-    public Path path() {
+    public @NotNull Path path() {
         return this.path;
     }
 
-    public synchronized String entry() {
+    public synchronized @NotNull String entry() {
         String entry = this.entry;
         if (entry == null) {
             entry = this.computeEntry();
@@ -78,7 +81,7 @@ final class ArchiveRootInfo implements Comparable<ArchiveRootInfo> {
     }
 
     @Override
-    public int compareTo(ArchiveRootInfo rootInfo) {
+    public int compareTo(@NotNull ArchiveRootInfo rootInfo) {
         return CharSequence.compare(this.entry(), rootInfo.entry());
     }
 

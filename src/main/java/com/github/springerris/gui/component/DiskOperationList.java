@@ -1,6 +1,7 @@
 package com.github.springerris.gui.component;
 
 import com.github.springerris.op.DiskOperation;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,7 @@ import java.awt.*;
  */
 public class DiskOperationList extends JList<DiskOperation> {
 
-    public DiskOperationList(ListModel<DiskOperation> dataModel) {
+    public DiskOperationList(@NotNull ListModel<DiskOperation> dataModel) {
         super(dataModel);
         this.setCellRenderer(new CellRenderer());
     }
@@ -24,9 +25,9 @@ public class DiskOperationList extends JList<DiskOperation> {
         private static final ListCellRenderer<Object> DEFAULT = new DefaultListCellRenderer();
 
         @Override
-        public Component getListCellRendererComponent(
-                JList<? extends DiskOperation> jList,
-                DiskOperation op,
+        public @NotNull Component getListCellRendererComponent(
+                @NotNull JList<? extends DiskOperation> jList,
+                @NotNull DiskOperation op,
                 int i,
                 boolean b,
                 boolean b1
@@ -43,7 +44,7 @@ public class DiskOperationList extends JList<DiskOperation> {
             return c;
         }
 
-        private Color getColor(DiskOperation.Type type) {
+        private @NotNull Color getColor(@NotNull DiskOperation.Type type) {
             return switch (type) {
                 case CREATE -> new Color(0x368C33);
                 case MODIFY -> new Color(0x33628C);

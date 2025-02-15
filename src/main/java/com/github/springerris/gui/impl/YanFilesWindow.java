@@ -9,6 +9,7 @@ import io.github.wasabithumb.yandisk4j.except.YanDiskException;
 import io.github.wasabithumb.yandisk4j.node.Node;
 import io.github.wasabithumb.yandisk4j.node.accessor.NodeDownloader;
 import io.github.wasabithumb.yandisk4j.util.PaginatedResult;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -29,16 +30,8 @@ public class YanFilesWindow extends BorderWindow {
     private DefaultListModel<String> list;
     private JList<String> fileList;
 
-    public YanFilesWindow(WindowContext ctx) {
+    public YanFilesWindow(@NotNull WindowContext ctx) {
         super(ctx, I18N.WINDOW_IMPORT_YANDEX_TITLE.get(), 300, 500);
-    }
-
-    private String passwordPrompt() {
-        String password;
-        do {
-            password = JOptionPane.showInputDialog(I18N.STAGE_PASSWORD_PROMPT_ENTER.get());
-        } while (password.isBlank());
-        return password;
     }
 
     @Override
@@ -79,7 +72,6 @@ public class YanFilesWindow extends BorderWindow {
             int r = jfc.showOpenDialog(null);
             if (r != JFileChooser.APPROVE_OPTION) return;
             File dir = jfc.getSelectedFile();
-            this.setVisible(false);
 
             this.onSelect0(zipNode, dir);
         }
@@ -107,6 +99,10 @@ public class YanFilesWindow extends BorderWindow {
             // TODO: Better logging
             e.printStackTrace();
         }
+    }
+
+    private @NotNull String passwordPrompt() {
+        return this.pester(I18N.STAGE_PASSWORD_PROMPT_ENTER);
     }
 
 }

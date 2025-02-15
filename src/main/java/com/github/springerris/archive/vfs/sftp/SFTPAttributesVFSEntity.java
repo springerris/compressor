@@ -4,7 +4,7 @@ import com.github.springerris.archive.vfs.VFSEntity;
 import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.FileMode;
 
-public record SFTPAttributesVFSEntity(
+record SFTPAttributesVFSEntity(
         String name,
         FileAttributes attributes
 ) implements VFSEntity {

@@ -5,6 +5,9 @@ import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -23,7 +26,7 @@ public class SSHHandler implements Closeable {
     private SSHClient shellClient;
     private SFTPClient transferClient;
 
-    public SSHHandler(String host, int port) {
+    public SSHHandler(@NotNull String host, int port) {
         this.host = host;
         this.port = port;
     }
@@ -38,8 +41,8 @@ public class SSHHandler implements Closeable {
      * @throws IOException A generic IO exception has occurred
      * @see #connect(Authentication)
      */
-    @Deprecated
-    public void connect(String username, String password) throws IOException {
+    @ApiStatus.Obsolete
+    public void connect(@NotNull String username, @NotNull String password) throws IOException {
         this.connect(Authentication.basic(username, password));
     }
 
@@ -49,7 +52,7 @@ public class SSHHandler implements Closeable {
      * @throws net.schmizz.sshj.userauth.UserAuthException Authentication parameters may be incorrect
      * @throws IOException A generic IO exception has occurred
      */
-    public void connect(Authentication auth) throws IOException {
+    public void connect(@NotNull Authentication auth) throws IOException {
         if (!this.getFlag(F_SHELL) || !this.shellClient.isConnected()) {
             this.connectShell(auth);
             this.setFlag(F_SHELL, true);
@@ -89,7 +92,7 @@ public class SSHHandler implements Closeable {
     /**
      * Performs a directory listing.
      */
-    public List<RemoteResourceInfo> list() throws IOException {
+    public @NotNull List<RemoteResourceInfo> list() throws IOException {
         this.assertOpen();
         return this.transferClient.ls("./");
     }
@@ -97,7 +100,7 @@ public class SSHHandler implements Closeable {
     /**
      * Returns a VFS which represents the content of the active SFTP connection.
      */
-    public VFS vfs() {
+    public @NotNull VFS vfs() {
         this.assertOpen();
         return VFS.sftp(this.transferClient);
     }
@@ -161,17 +164,19 @@ public class SSHHandler implements Closeable {
     @FunctionalInterface
     public interface Authentication {
 
-        static Authentication basic(final String username, final String password) {
+        @Contract("_, _ -> new")
+        static @NotNull Authentication basic(final @NotNull String username, final @NotNull String password) {
             return (SSHClient c) -> c.authPassword(username, password);
         }
 
-        static Authentication publicKey(final String username) {
+        @Contract("_ -> new")
+        static @NotNull Authentication publicKey(final @NotNull String username) {
             return (SSHClient c) -> c.authPublickey(username);
         }
 
         //
 
-        void apply(SSHClient client) throws IOException;
+        void apply(@NotNull SSHClient client) throws IOException;
 
     }
 

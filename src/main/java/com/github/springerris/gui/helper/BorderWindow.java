@@ -2,12 +2,19 @@ package com.github.springerris.gui.helper;
 
 import com.github.springerris.gui.Window;
 import com.github.springerris.gui.WindowContext;
+import org.intellij.lang.annotations.MagicConstant;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
 public abstract class BorderWindow extends Window {
 
-    public BorderWindow(WindowContext ctx, String title, int initialWidth, int initialHeight) {
+    public BorderWindow(
+            @NotNull WindowContext ctx,
+            @NotNull String title,
+            int initialWidth,
+            int initialHeight
+    ) {
         super(ctx, title, initialWidth, initialHeight);
     }
 
@@ -17,11 +24,14 @@ public abstract class BorderWindow extends Window {
         contentPane.setLayout(new BorderLayout());
     }
 
-    protected void addElement(Component component, String placement) {
+    protected void addElement(
+            @NotNull Component component,
+            @NotNull @MagicConstant(valuesFromClass = BorderLayout.class) String placement
+    ) {
         this.getContentPane().add(component, placement);
     }
 
-    protected void addElement(Component component) {
+    protected void addElement(@NotNull Component component) {
         this.addElement(component, BorderLayout.CENTER);
     }
 

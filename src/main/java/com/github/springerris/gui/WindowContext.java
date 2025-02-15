@@ -4,6 +4,8 @@ package com.github.springerris.gui;
 
 import com.github.springerris.archive.Archive;
 import com.github.springerris.token.TokenStore;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -22,7 +24,7 @@ public class WindowContext {
     private Archive archive;
     private CompletableFuture<?> activeTask = null;
 
-    public WindowContext(Logger logger) {
+    public WindowContext(@NotNull Logger logger) {
         this.logger = logger;
         this.tokens = new TokenStore(logger);
         this.archive = new Archive();
@@ -30,18 +32,18 @@ public class WindowContext {
 
     //
 
-    public Logger logger() {
+    public @NotNull Logger logger() {
         return this.logger;
     }
 
-    public TokenStore tokens() {
+    public @NotNull TokenStore tokens() {
         return this.tokens;
     }
 
     /**
      * The archive being inspected/modified by the user.
      */
-    public Archive archive() {
+    public @NotNull Archive archive() {
         return this.archive;
     }
 
@@ -49,7 +51,10 @@ public class WindowContext {
      * Replaces the active {@link #archive()} by loading a previously saved ZIP;
      * as specified by {@link Archive#read(Path, Supplier) Archive#read}.
      */
-    public void loadArchive(Path file, Supplier<String> password) throws IOException {
+    public void loadArchive(
+            @NotNull Path file,
+            @NotNull Supplier<String> password
+    ) throws IOException {
         this.archive = Archive.read(file, password);
     }
 
@@ -60,7 +65,7 @@ public class WindowContext {
      * action is complete.
      * @see #whenActiveTaskComplete(Runnable)
      */
-    public void setActiveTask(CompletableFuture<?> activeTask) {
+    public void setActiveTask(@Nullable CompletableFuture<?> activeTask) {
         this.activeTask = activeTask;
     }
 
@@ -68,7 +73,7 @@ public class WindowContext {
      * Runs the specified callback when the {@link #setActiveTask(CompletableFuture) active task}
      * is complete. If the active task is updated while a callback is pending, behavior is undefined.
      */
-    public void whenActiveTaskComplete(Runnable r) {
+    public void whenActiveTaskComplete(@NotNull Runnable r) {
         if (this.activeTask == null) r.run();
         this.activeTask.whenComplete((Object result, Throwable err) -> {
             if (err != null) this.logger.log(Level.WARNING, "Deferred task raised an exception", err);

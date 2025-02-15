@@ -4,6 +4,9 @@ import com.github.springerris.gui.Window;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.impl.AwaitingWindow;
 import com.github.springerris.gui.impl.MainWindow;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Blocking;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -16,7 +19,12 @@ import static java.awt.GridBagConstraints.HORIZONTAL;
 
 public abstract class ChoiceWindow extends GridBagWindow {
 
-    public ChoiceWindow(WindowContext ctx, String title, int initialWidth, int initialHeight) {
+    public ChoiceWindow(
+            @NotNull WindowContext ctx,
+            @NotNull String title,
+            int initialWidth,
+            int initialHeight
+    ) {
         super(ctx, title, initialWidth, initialHeight);
 
         // When close button is pressed, go to MainWindow
@@ -30,8 +38,10 @@ public abstract class ChoiceWindow extends GridBagWindow {
 
     //
 
-    protected abstract String[] getChoices();
+    protected abstract @NotNull String @NotNull [] getChoices();
 
+    @ApiStatus.OverrideOnly
+    @Blocking
     protected abstract void onClickChoice(int index);
 
     //
@@ -50,7 +60,8 @@ public abstract class ChoiceWindow extends GridBagWindow {
      * Utility that creates a new window which inherits the current context and blocks until it closes;
      * either by the user pressing the close button or the window calling {@link Window#dispose()} on itself.
      */
-    protected final void popup(Class<? extends Window> clazz) {
+    @Blocking
+    protected final void popup(@NotNull Class<? extends Window> clazz) {
         Window window = construct(clazz, this.ctx);
         Object mutex = new Object();
 

@@ -1,5 +1,8 @@
 package com.github.springerris.util;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.event.*;
 import java.util.function.Consumer;
 
@@ -12,7 +15,8 @@ public final class Listeners {
      * Creates a MouseListener which defers to the specified callback
      * on {@link MouseListener#mouseClicked(MouseEvent) mouseClicked}.
      */
-    public static MouseListener mouseClicked(Consumer<MouseEvent> cb) {
+    @Contract("_ -> new")
+    public static @NotNull MouseListener mouseClicked(@NotNull Consumer<MouseEvent> cb) {
         return new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -25,7 +29,8 @@ public final class Listeners {
      * Creates a KeyListener which defers to the specified callback
      * on {@link KeyListener#keyReleased(KeyEvent) keyReleased}.
      */
-    public static KeyListener keyReleased(Consumer<KeyEvent> cb) {
+    @Contract("_ -> new")
+    public static @NotNull KeyListener keyReleased(@NotNull Consumer<KeyEvent> cb) {
         return new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {

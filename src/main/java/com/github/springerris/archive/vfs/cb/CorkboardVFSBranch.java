@@ -1,17 +1,21 @@
 package com.github.springerris.archive.vfs.cb;
 
 import com.github.springerris.archive.vfs.VFSEntity;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents either a {@link CorkboardVFSLink} (link) or a {@link CorkboardVFS} (dir).
  */
 sealed abstract class CorkboardVFSBranch {
 
-    static CorkboardVFSBranch of(CorkboardVFSLink link) {
+    @Contract("_ -> new")
+    static @NotNull CorkboardVFSBranch of(@NotNull CorkboardVFSLink link) {
         return new Link(link);
     }
 
-    static CorkboardVFSBranch of(CorkboardVFS dir) {
+    @Contract("_ -> new")
+    static @NotNull CorkboardVFSBranch of(@NotNull CorkboardVFS dir) {
         return new Dir(dir);
     }
 
@@ -31,7 +35,7 @@ sealed abstract class CorkboardVFSBranch {
 
     static final class Link extends CorkboardVFSBranch {
 
-        private CorkboardVFSLink handle;
+        private final CorkboardVFSLink handle;
         Link(CorkboardVFSLink handle) {
             this.handle = handle;
         }

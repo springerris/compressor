@@ -4,7 +4,7 @@ import com.github.springerris.archive.vfs.VFSEntity;
 
 import java.util.zip.ZipEntry;
 
-public record ZipVFSEntity(
+record ZipVFSEntity(
         ZipEntry handle,
         String name
 ) implements VFSEntity {
