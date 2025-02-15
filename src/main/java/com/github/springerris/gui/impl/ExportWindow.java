@@ -29,7 +29,7 @@ public class ExportWindow extends ChoiceWindow {
         return new String[] {
                 I18N.WINDOW_EXPORT_OPTION_ZIP.get(),
                 I18N.WINDOW_EXPORT_OPTION_YANDEX.get(),
-                "Отправить по SFTP"
+                I18N.WINDOW_EXPORT_OPTION_SFTP.get()
         };
     }
 
@@ -93,7 +93,7 @@ public class ExportWindow extends ChoiceWindow {
     }
 
     private void onClickChoice2() {
-        SSHWindow sshWindow = new SSHWindow(ctx,"Поключение к SFTP",500,300);
+        SSHWindow sshWindow = new SSHWindow(this.ctx);
         sshWindow.setVisible(true);
     }
 

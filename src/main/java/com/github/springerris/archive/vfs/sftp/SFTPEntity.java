@@ -3,12 +3,10 @@ package com.github.springerris.archive.vfs.sftp;
 import com.github.springerris.archive.vfs.VFSEntity;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 
-import java.util.zip.ZipEntry;
-
 public record SFTPEntity(
-        RemoteResourceInfo handle,
-        String name
+        RemoteResourceInfo handle
 ) implements VFSEntity {
+
     @Override
     public String name() {
         return handle.getName();
@@ -28,4 +26,5 @@ public record SFTPEntity(
     public long size() {
         return handle.getAttributes().getSize();
     }
+
 }

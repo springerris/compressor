@@ -1,5 +1,6 @@
 package com.github.springerris.util;
 
+import com.github.springerris.i18n.I18N;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.RemoteResource;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -13,48 +14,58 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Class has been cleaned up, but is still SUBOPTIMAL. This will get its own commit. Go to your room young man!
 public class SSHHandler {
-    private String user;
-    private String pwd;
-    private String host;
-    private SSHClient client;
 
-    public SSHHandler(String user, String pwd, String remoteHost, int port)  {
+    private final SSHClient client;
 
+    public SSHHandler(String user, String password, String remoteHost, int port) {
         this.client = new SSHClient();
-        client.addHostKeyVerifier(new PromiscuousVerifier());
+        this.client.addHostKeyVerifier(new PromiscuousVerifier());
         try {
-            client.connect(remoteHost, port);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(new JFrame(), "Не удалось подключится к удалённому хосту", "Ошибка",
-                    JOptionPane.ERROR_MESSAGE);
+            this.client.connect(remoteHost, port);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Не удалось подключится к удалённому хосту",
+                    I18N.POPUP_ERROR.get(),
+                    JOptionPane.ERROR_MESSAGE
+            );
             throw new RuntimeException(e);
         }
         try {
-            client.authPassword(user, pwd);
+            this.client.authPassword(user, password);
         } catch (UserAuthException | TransportException e) {
-            JOptionPane.showMessageDialog(new JFrame(), "Логин и пароль не подошли под данный хост", "Ошибка",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Логин и пароль не подошли под данный хост",
+                    I18N.POPUP_ERROR.get(),
+                    JOptionPane.ERROR_MESSAGE
+            );
             throw new RuntimeException(e);
-
         }
-        JOptionPane.showMessageDialog(new JFrame(), "Подключение УСПЕШНО!!!", "Информация",
-                JOptionPane.INFORMATION_MESSAGE);
-
+        JOptionPane.showMessageDialog(
+                null,
+                "Подключение УСПЕШНО!!!",
+                I18N.POPUP_INFO.get(),
+                JOptionPane.INFORMATION_MESSAGE
+        );
         try {
-            SFTPClient sftpClient = client.newSFTPClient();
+            SFTPClient sftpClient = this.client.newSFTPClient();
             List<RemoteResourceInfo> files = sftpClient.ls("./");
             for (RemoteResourceInfo f : files) {
-                JOptionPane.showMessageDialog(new JFrame(), f.getPath(), "Информация",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        null,
+                        f.getPath(),
+                        I18N.POPUP_INFO.get(),
+                        JOptionPane.INFORMATION_MESSAGE
+                );
             }
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
 }
 
 

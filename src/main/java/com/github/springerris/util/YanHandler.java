@@ -3,14 +3,12 @@ package com.github.springerris.util;
 import com.github.springerris.gui.Window;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.i18n.I18N;
-import io.github.wasabithumb.magma4j.Magma;
 import io.github.wasabithumb.yandisk4j.YanDisk;
 import io.github.wasabithumb.yandisk4j.auth.AuthHandler;
 import io.github.wasabithumb.yandisk4j.auth.AuthResponse;
 import io.github.wasabithumb.yandisk4j.auth.AuthScheme;
 import io.github.wasabithumb.yandisk4j.auth.scope.AuthScope;
 import io.github.wasabithumb.yandisk4j.node.Node;
-import io.github.wasabithumb.yandisk4j.node.accessor.NodeAccessor;
 import io.github.wasabithumb.yandisk4j.node.accessor.NodeDownloader;
 import io.github.wasabithumb.yandisk4j.node.accessor.NodeUploader;
 
@@ -45,31 +43,24 @@ public class YanHandler {
 
         auth.openURL();
 
-        // for SCREEN_CODE
-        // String code = JOptionPane.showInputDialog("ENTER CODE");
         String code = auth.awaitCode().code();
-
         AuthResponse response = auth.exchange(code);
         return this.token = response.accessToken();
-
     }
 
     public void upload(String password) {
         YanDisk yd = YanDisk.yanDisk(this.getToken());
         String zipName = JOptionPane.showInputDialog(I18N.SEND_PICK_NAME.get());
-        if (zipName == null || zipName.isBlank() ) {
+        if (zipName == null || zipName.isBlank()) {
             // TODO: something will go here
             return;
         }
-        yd.mkdir("disk:/.archives",true);
-        String pathstr = "disk:/.archives/" + zipName + ".zip";
-        if (password == null) {
-            pathstr = pathstr + ".m64";
-        }
-        NodeUploader nu = yd.upload(pathstr);
 
-        try ( OutputStream os = nu.open()) {
+        yd.mkdir("disk:/.archives", true);
 
+        String ext = (password == null) ? ".zip" : ".zip.m64";
+        NodeUploader nu = yd.upload("disk:/.archives/" + zipName + ext);
+        try (OutputStream os = nu.open()) {
             this.ctx.archive().write(os, password);
         } catch (IOException ex) {
             this.ctx.logger().log(Level.SEVERE, "Ошибка работы с сервисом Yandex Disk", ex);
@@ -87,21 +78,20 @@ public class YanHandler {
         YanDisk yd = YanDisk.yanDisk(this.getToken());
         NodeDownloader nd = yd.download(n.path());
         if (f.exists()) {
-            int result = JOptionPane.showConfirmDialog(null,"Такой архив уже есть в данной директории, заменить?", "Информация",
+            int result = JOptionPane.showConfirmDialog(
+                    null,
+                    I18N.RECEIVE_CONFLICT.get(),
+                    I18N.POPUP_INFO.get(),
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
-            if(result == JOptionPane.YES_OPTION){
-                Files.copy(nd.open(), f.toPath(),REPLACE_EXISTING);
-            }
-        } else {
-            Files.copy(nd.open(), f.toPath(),REPLACE_EXISTING);
+            if (result != JOptionPane.YES_OPTION) return;
         }
-
-    };
+        Files.copy(nd.open(), f.toPath(), REPLACE_EXISTING);
+    }
 
     public List<Node> listFiles() {
         YanDisk yd = YanDisk.yanDisk(this.getToken());
-        yd.mkdir("disk:/.archives",true);
+        yd.mkdir("disk:/.archives", true);
         return yd.list("disk:/.archives", 100, 0);
     }
 

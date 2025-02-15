@@ -19,7 +19,6 @@ public final class I18N {
 
     public static final LangString LIFECYCLE_START = builder()
             .en("Starting PP2024")
-
             .build();
 
     public static final LangString LIFECYCLE_CONTEXT = builder()
@@ -44,7 +43,7 @@ public final class I18N {
 
     public static final LangString WINDOW_MAIN_BUTTON_ADD = builder()
             .en("Add")
-            .ru("Добавить файл") // TODO: Abbreviate
+            .ru("Добавить файл")
             .build();
 
     public static final LangString WINDOW_MAIN_BUTTON_IMPORT = builder()
@@ -54,12 +53,12 @@ public final class I18N {
 
     public static final LangString WINDOW_MAIN_BUTTON_EXPORT = builder()
             .en("Export")
-            .ru("Отправить архив в..") // TODO: Abbreviate
+            .ru("Отправить архив в..")
             .build();
 
     public static final LangString WINDOW_MAIN_BUTTON_SYNC = builder()
             .en("Sync")
-            .ru("Распаковать") // TODO: Abbreviate
+            .ru("Распаковать")
             .build();
 
     public static final LangString WINDOW_MAIN_ERROR_ADD_FILE = builder()
@@ -92,9 +91,39 @@ public final class I18N {
             .ru("Отправить на Yandex Disk")
             .build();
 
-    public static final LangString WINDOW_EXPORT_OPTION_DRIVE = builder()
-            .en("Upload to Google Drive")
-            .ru("Отправить на Google Drive")
+    public static final LangString WINDOW_EXPORT_OPTION_SFTP = builder()
+            .en("Upload via SFTP")
+            .ru("Отправить по SFTP")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_TITLE = builder()
+            .en("Connect to SFTP")
+            .ru("Поключение к SFTP")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_CONFIRM = builder()
+            .en("Confirm")
+            .ru("Подключится")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_HOST = builder()
+            .en("Host")
+            .ru("Хост")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_PORT = builder()
+            .en("Port")
+            .ru("Порт")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_USERNAME = builder()
+            .en("Username")
+            .ru("Пользователь")
+            .build();
+
+    public static final LangString WINDOW_EXPORT_SFTP_PASSWORD = builder()
+            .en("Password")
+            .ru("Пароль")
             .build();
 
     public static final LangString WINDOW_IMPORT_TITLE = builder()
@@ -127,9 +156,14 @@ public final class I18N {
             .ru("Неправильный формат (ZIP не был создан)")
             .build();
 
+    public static final LangString WINDOW_IMPORT_YANDEX_TITLE = builder()
+            .en("Select an archive to download")
+            .ru("Выберите архив для скачивания")
+            .build();
+
     public static final LangString WINDOW_SYNC_TITLE = builder()
             .en("Sync")
-            .ru("Распаковать архив") // TODO: Verify
+            .ru("Распаковать архив")
             .build();
 
     public static final LangString WINDOW_SYNC_CONFIRM = builder()
@@ -185,6 +219,11 @@ public final class I18N {
     public static final LangString SEND_PICK_NAME = builder()
             .en("Enter a file name for the archive")
             .ru("Введите название файла для архива")
+            .build();
+
+    public static final LangString RECEIVE_CONFLICT = builder()
+            .en("An archive with this name already exists. Replace?")
+            .ru("Такой архив уже есть в данной директории, заменить?")
             .build();
 
     public static final LangString OP_WRITE_NEW_FILE = builder()

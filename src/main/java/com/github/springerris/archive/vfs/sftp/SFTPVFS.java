@@ -3,8 +3,6 @@ package com.github.springerris.archive.vfs.sftp;
 import com.github.springerris.archive.vfs.AbstractVFS;
 import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
-import com.github.springerris.archive.vfs.fs.FilesystemVFS;
-import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResource;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -12,8 +10,6 @@ import net.schmizz.sshj.sftp.SFTPClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 

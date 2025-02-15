@@ -3,33 +3,17 @@ package com.github.springerris.gui.impl;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.BorderWindow;
 import com.github.springerris.i18n.I18N;
-import com.github.springerris.util.YanHandler;
-import io.github.wasabithumb.yandisk4j.node.Node;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
 
 public class SFTPFilesWindow extends BorderWindow {
 
-
-    public Node getZipNode() {
-        return zipNode;
-    }
-
     private boolean isDownloading = false;
-    private Node zipNode;
-    private List<Node> yanFiles;
-    private YanHandler yh;
-    private JList<String> fileList;
     private DefaultListModel<String> list;
 
-    public SFTPFilesWindow(WindowContext ctx, String title, int initialWidth, int initialHeight) {
-        super(ctx, title, initialWidth, initialHeight);
+    public SFTPFilesWindow(WindowContext ctx) {
+        // TODO: Decide title & dimensions
+        super(ctx, "Title", 500, 500);
     }
 
     private String passwordPrompt() {
@@ -42,7 +26,10 @@ public class SFTPFilesWindow extends BorderWindow {
 
     @Override
     protected void setupContent() {
-        list = new DefaultListModel<String>();
+        // This code was copied from the YanFilesWindow class, as they have similar functions. However, it has to be
+        // commented out as it references symbols that only makes sense for Yandex.
+        /*
+        list = new DefaultListModel<>();
         JList<String> fileList = new JList<>(list);
         ScrollPane sp = new ScrollPane();
         sp.add(fileList);
@@ -61,8 +48,8 @@ public class SFTPFilesWindow extends BorderWindow {
                 File dir = jfc.getSelectedFile();
                 this.setVisible(false);
                 System.out.println(dir);
-                System.out.println(Paths.get(dir.toString(),this.getZipNode().name()).toString());
-                File newZip = new File(Paths.get(dir.toString(),this.getZipNode().name()).toString());
+                System.out.println(Paths.get(dir.toString(),this.zipNode.name()).toString());
+                File newZip = new File(Paths.get(dir.toString(),this.zipNode.name()).toString());
                 try {
                     yh.download(zipNode,newZip);
                     ctx.loadArchive(newZip.toPath(),this::passwordPrompt);
@@ -72,20 +59,7 @@ public class SFTPFilesWindow extends BorderWindow {
 
             }
         });
-
+        */
     }
-
-
-    public void setYh(YanHandler yh) {
-        this.yh = yh;
-    }
-
-    public void fillList() {
-        yanFiles = this.yh.listFiles();
-        for (Node n: yanFiles) {
-            list.addElement(n.name());
-        }
-    }
-
 
 }

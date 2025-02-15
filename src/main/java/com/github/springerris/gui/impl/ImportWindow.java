@@ -67,7 +67,7 @@ public class ImportWindow extends ChoiceWindow {
 
     private void onClickChoice1() {
         YanHandler yh = new YanHandler(this.ctx, this);
-        YanFilesWindow yfw = new YanFilesWindow(this.ctx,"Выберите архив для скачивания",300,500);
+        YanFilesWindow yfw = new YanFilesWindow(this.ctx);
         yfw.setYh(yh);
         yfw.fillList();
         yfw.setVisible(true);
