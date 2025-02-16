@@ -3,7 +3,9 @@ package com.github.springerris.archive.vfs;
 import com.github.springerris.archive.vfs.cb.CorkboardVFS;
 import com.github.springerris.archive.vfs.fs.FilesystemVFS;
 import com.github.springerris.archive.vfs.sftp.SFTPVFS;
+import com.github.springerris.archive.vfs.yandisk.YanDiskVFS;
 import com.github.springerris.archive.vfs.zip.ZipVFS;
+import io.github.wasabithumb.yandisk4j.YanDisk;
 import net.schmizz.sshj.sftp.SFTPClient;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +66,25 @@ public interface VFS {
     @Contract("_ -> new")
     static @NotNull VFS sftp(@NotNull SFTPClient client) {
         return new SFTPVFS(client);
+    }
+
+    /**
+     * Creates a VFS which represents the content of Yandex Disk storage.
+     * @param app If true, reads the tree at {@code app:/}. Otherwise, reads the tree at {@code disk:/}.
+     */
+    @Contract("_, _ -> new")
+    static @NotNull VFS yanDisk(@NotNull YanDisk instance, boolean app) {
+        return new YanDiskVFS(instance, app);
+    }
+
+    /**
+     * Creates a VFS which represents the content of Yandex Disk storage.
+     * Alias for {@code yanDisk(instance, false)}.
+     * @see #yanDisk(YanDisk, boolean)
+     */
+    @Contract("_ -> new")
+    static @NotNull VFS yanDisk(@NotNull YanDisk instance) {
+        return yanDisk(instance, false);
     }
 
     //
