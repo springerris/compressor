@@ -20,7 +20,7 @@ public abstract class GridBagWindow extends Window {
 
     public GridBagWindow(
             @NotNull WindowContext ctx,
-            @NotNull String title,
+            @NotNull CharSequence title,
             int initialWidth,
             int initialHeight
     ) {

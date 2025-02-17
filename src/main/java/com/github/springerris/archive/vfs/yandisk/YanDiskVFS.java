@@ -1,5 +1,6 @@
 package com.github.springerris.archive.vfs.yandisk;
 
+import com.github.springerris.archive.vfs.AbstractVFS;
 import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
 import io.github.wasabithumb.yandisk4j.YanDisk;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ApiStatus.Internal
-public class YanDiskVFS implements VFS {
+public class YanDiskVFS extends AbstractVFS {
 
     private final YanDisk handle;
     private final NodePath root;

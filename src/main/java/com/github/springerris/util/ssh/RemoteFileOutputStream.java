@@ -1,5 +1,6 @@
 package com.github.springerris.util.ssh;
 
+import net.schmizz.sshj.common.SSHException;
 import net.schmizz.sshj.sftp.RemoteFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +33,11 @@ public class RemoteFileOutputStream extends OutputStream {
 
     @Override
     public void close() throws IOException {
-        this.handle.close();
+        try {
+            this.handle.close();
+        } catch (SSHException ignored) {
+            // Library likes to throw bullshit errors on close
+        }
     }
 
 }

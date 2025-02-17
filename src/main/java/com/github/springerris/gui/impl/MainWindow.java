@@ -18,7 +18,7 @@ public class MainWindow extends BorderWindow {
     private VFSExplorer explorer;
 
     public MainWindow(@NotNull WindowContext ctx) {
-        super(ctx, I18N.WINDOW_MAIN_TITLE.get(), 800, 500);
+        super(ctx, I18N.WINDOW_MAIN_TITLE, 800, 500);
     }
 
     //

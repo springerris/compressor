@@ -1,6 +1,8 @@
 package com.github.springerris.gui.impl;
 
+import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
+import com.github.springerris.archive.vfs.yandisk.YanDiskVFS;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.ChoiceWindow;
 import com.github.springerris.i18n.I18N;
@@ -26,7 +28,7 @@ import java.util.logging.Level;
 public class ExportWindow extends ChoiceWindow {
 
     public ExportWindow(@NotNull WindowContext ctx) {
-        super(ctx, I18N.WINDOW_EXPORT_TITLE.get(), 300, 200);
+        super(ctx, I18N.WINDOW_EXPORT_TITLE, 300, 200);
     }
 
     //
@@ -52,8 +54,8 @@ public class ExportWindow extends ChoiceWindow {
     //
 
     private void onClickChoice0() {
-        final String zipDesc = I18N.WINDOW_EXPORT_OPTION_ZIP_TYPE_BASIC.get();
-        final String encryptedZipDesc = I18N.WINDOW_EXPORT_OPTION_ZIP_TYPE_ENCRYPTED.get();
+        final String zipDesc = I18N.FILE_TYPE_ZIP.get();
+        final String encryptedZipDesc = I18N.FILE_TYPE_ZIP_ENCRYPTED.get();
 
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -96,45 +98,18 @@ public class ExportWindow extends ChoiceWindow {
 
     private void onClickChoice1() {
         YanDisk yd = YanDisk.yanDisk(this.ctx.tokens().get(TokenType.YANDEX_DISK));
-        String password = this.passwordPrompt(true);
 
-        String zipName = JOptionPane.showInputDialog(I18N.SEND_PICK_NAME.get());
-        if (zipName == null || zipName.isBlank()) {
-            // TODO: something will go here
-            return;
-        }
-
-        yd.mkdir("disk:/.archives", true);
-
-        String ext = (password == null) ? ".zip" : ".zip.m64";
-        NodeUploader nu = yd.upload("disk:/.archives/" + zipName + ext);
-        try (OutputStream os = nu.open()) {
-            this.ctx.archive().write(os, password);
-        } catch (IOException ex) {
-            this.ctx.logger().log(Level.SEVERE, "Ошибка работы с сервисом Yandex Disk", ex);
-            this.showError("""
-                    Ошибка работы с сервисом Yandex Disk. Проверьте: \
-                    1) Есть ли у вас доступ к интернету              \
-                    2) Доступен ли сервис Yandex на данный момент"""
-            );
-            System.exit(1);
-        }
+        VFS vfs = VFS.yanDisk(yd);
+        this.ctx.setRemote(vfs);
+        this.popup(RemoteExportWindow.class);
     }
 
     private void onClickChoice2() {
         SSHHandler handler = this.popup(SftpConnectWindow.class);
         if (handler == null) return; // User aborted
 
-        // TODO
-        // Alert the listing for debug purposes
-        try {
-            VFSEntity[] list = handler.vfs().list();
-            for (VFSEntity ent : list) {
-                this.showInfo((ent.isDirectory() ? "D" : "F") + " > " + ent.name());
-            }
-        } catch (IOException e) {
-            this.ctx.logger().log(Level.WARNING, "Unexpected error", e);
-        }
+        this.ctx.setRemote(handler.vfs());
+        this.popup(RemoteExportWindow.class);
 
         try {
             handler.close();

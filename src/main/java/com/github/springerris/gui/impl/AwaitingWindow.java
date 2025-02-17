@@ -21,7 +21,7 @@ public class AwaitingWindow extends GridBagWindow {
     private boolean canContinue = false;
 
     public AwaitingWindow(@NotNull WindowContext ctx) {
-        super(ctx, I18N.WINDOW_AWAITING_TITLE.get(), 340, 240);
+        super(ctx, I18N.WINDOW_AWAITING_TITLE, 340, 240);
         this.ctx.whenActiveTaskComplete(this::onComplete);
     }
 

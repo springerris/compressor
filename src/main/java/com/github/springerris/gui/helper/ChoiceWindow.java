@@ -21,7 +21,7 @@ public abstract class ChoiceWindow extends GridBagWindow {
 
     public ChoiceWindow(
             @NotNull WindowContext ctx,
-            @NotNull String title,
+            @NotNull CharSequence title,
             int initialWidth,
             int initialHeight
     ) {

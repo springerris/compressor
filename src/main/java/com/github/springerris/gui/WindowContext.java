@@ -3,9 +3,11 @@
 package com.github.springerris.gui;
 
 import com.github.springerris.archive.Archive;
+import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.token.TokenStore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -23,6 +25,7 @@ public class WindowContext {
     private final TokenStore tokens;
     private Archive archive;
     private CompletableFuture<?> activeTask = null;
+    private VFS remote = null;
 
     public WindowContext(@NotNull Logger logger) {
         this.logger = logger;
@@ -79,6 +82,22 @@ public class WindowContext {
             if (err != null) this.logger.log(Level.WARNING, "Deferred task raised an exception", err);
             r.run();
         });
+    }
+
+    /**
+     * Gets the remote VFS previously stored by {@link #setRemote(VFS)}.
+     */
+    public @NotNull VFS getRemote() {
+        if (this.remote == null) throw new IllegalStateException("Remote VFS was not set");
+        return this.remote;
+    }
+
+    /**
+     * Sets the VFS representing the remote server we are reading from/writing to.
+     * Setting this is required before opening windows that deal with remote filesystems.
+     */
+    public void setRemote(@NotNull VFS remote) {
+        this.remote = remote;
     }
 
 }

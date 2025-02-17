@@ -76,12 +76,17 @@ public final class I18N {
             .ru("Записать архив")
             .build();
 
-    public static final LangString WINDOW_EXPORT_OPTION_ZIP_TYPE_BASIC = builder()
+    public static final LangString FILE_TYPE_ALL = builder()
+            .en("All files")
+            // TODO: ru
+            .build();
+
+    public static final LangString FILE_TYPE_ZIP = builder()
             .en("ZIP")
             .ru("ZIP")
             .build();
 
-    public static final LangString WINDOW_EXPORT_OPTION_ZIP_TYPE_ENCRYPTED = builder()
+    public static final LangString FILE_TYPE_ZIP_ENCRYPTED = builder()
             .en("Encrypted ZIP")
             .ru("Шифрованный ZIP")
             .build();
@@ -289,6 +294,21 @@ public final class I18N {
     public static final LangString OP_DELETE_DIR = builder()
             .en("Delete directory")
             .ru("Удалить папку")
+            .build();
+
+    public static final LangString PICKER_OPEN = builder()
+            .en("Open")
+            // TODO: ru
+            .build();
+
+    public static final LangString PICKER_HIDE_DOT_FILES = builder()
+            .en("Hide dotfiles")
+            // TODO: ru
+            .build();
+
+    public static final LangString PICKER_CONFLICT = builder()
+            .en("File already exists. Replace?")
+            // TODO: ru
             .build();
 
 }

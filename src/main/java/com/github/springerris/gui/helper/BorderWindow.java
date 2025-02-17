@@ -11,7 +11,7 @@ public abstract class BorderWindow extends Window {
 
     public BorderWindow(
             @NotNull WindowContext ctx,
-            @NotNull String title,
+            @NotNull CharSequence title,
             int initialWidth,
             int initialHeight
     ) {

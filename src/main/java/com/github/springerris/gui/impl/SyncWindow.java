@@ -20,7 +20,7 @@ public class SyncWindow extends BorderWindow {
     private DiskOperationQueue operations;
 
     public SyncWindow(@NotNull WindowContext ctx) {
-        super(ctx, I18N.WINDOW_SYNC_TITLE.get(), 640, 480);
+        super(ctx, I18N.WINDOW_SYNC_TITLE, 640, 480);
     }
 
     //

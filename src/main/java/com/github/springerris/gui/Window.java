@@ -33,11 +33,11 @@ public abstract class Window extends JFrame {
     protected final WindowContext ctx;
     public Window(
             @NotNull WindowContext ctx,
-            @NotNull String title,
+            @NotNull CharSequence title,
             int initialWidth,
             int initialHeight
     ) {
-        super(title);
+        super(title.toString());
         this.ctx = ctx;
         this.setSize(initialWidth, initialHeight);
         this.setResizable(true);

@@ -34,7 +34,7 @@ public class SftpConnectWindow extends BorderWindow implements Modal<SSHHandler>
     private JTabbedPane authPane;
 
     public SftpConnectWindow(@NotNull WindowContext ctx) {
-        super(ctx, I18N.WINDOW_CONNECT_SFTP_TITLE.get(), 255, 245);
+        super(ctx, I18N.WINDOW_CONNECT_SFTP_TITLE, 255, 245);
     }
 
     @Override

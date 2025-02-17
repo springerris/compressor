@@ -17,10 +17,10 @@ import java.util.Arrays;
 
 public class VFSExplorer extends JPanel {
 
-    private final VFS vfs;
-    private String path;
+    protected final VFS vfs;
+    protected String path;
+    protected final DefaultListModel<VFSEntity> entries;
     private final JTextField pathField;
-    private final DefaultListModel<VFSEntity> entries;
     private final VFSEntityList entriesList;
 
     public VFSExplorer(@NotNull VFS vfs) {
@@ -50,11 +50,19 @@ public class VFSExplorer extends JPanel {
         this.entriesList.addMouseListener(Listeners.mouseClicked(this::onClickEntry));
         this.add(new JScrollPane(this.entriesList), BorderLayout.CENTER);
 
+        // Create footer
+        Component footer = this.createFooter();
+        if (footer != null) this.add(footer, BorderLayout.PAGE_END);
+
         // Initial populate
         this.refresh0();
     }
 
     //
+
+    public @NotNull VFS vfs() {
+        return this.vfs;
+    }
 
     /** Gets the active path of the explorer */
     public @NotNull String getPath() {
@@ -91,11 +99,29 @@ public class VFSExplorer extends JPanel {
             e.printStackTrace();
             return;
         }
-        Arrays.sort(list);
 
-        for (VFSEntity ent : list) {
-            this.entries.addElement(ent);
+        // Filter
+        int len = 0;
+        VFSEntity next;
+        for (int u=0; u < list.length; u++) {
+            next = list[u];
+            if (this.shouldExclude(next)) continue;
+            if (len != u) list[len] = list[u];
+            len++;
         }
+
+        // Sort
+        Arrays.sort(list, 0, len);
+
+        // Add
+        for (int i=0; i < len; i++) {
+            this.entries.addElement(list[i]);
+        }
+    }
+
+    @ApiStatus.OverrideOnly
+    protected boolean shouldExclude(@NotNull VFSEntity entity) {
+        return false;
     }
 
     //
@@ -159,6 +185,11 @@ public class VFSExplorer extends JPanel {
 
     @ApiStatus.OverrideOnly
     protected void onClickFile(@NotNull VFSEntity file, boolean doubleClick) { }
+
+    @ApiStatus.OverrideOnly
+    protected @Nullable Component createFooter() {
+        return null;
+    }
 
     //
 
