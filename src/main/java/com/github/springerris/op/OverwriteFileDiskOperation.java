@@ -2,6 +2,8 @@ package com.github.springerris.op;
 
 import com.github.springerris.i18n.I18N;
 import com.github.springerris.i18n.Language;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,13 +17,14 @@ import java.util.concurrent.Callable;
 /**
  * @see DiskOperation
  */
+@ApiStatus.Internal
 final class OverwriteFileDiskOperation extends WritingDiskOperation {
 
     private static final OpenOption[] OPEN_OPTIONS = new OpenOption[] {
             StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING
     };
 
-    public OverwriteFileDiskOperation(Path file, Callable<InputStream> source) {
+    public OverwriteFileDiskOperation(@NotNull Path file, @NotNull Callable<InputStream> source) {
         super(file, source);
     }
 
@@ -29,12 +32,12 @@ final class OverwriteFileDiskOperation extends WritingDiskOperation {
 
 
     @Override
-    public Type type() {
+    public @NotNull Type type() {
         return Type.MODIFY;
     }
 
     @Override
-    public String description(Language language) {
+    public @NotNull String description(@NotNull Language language) {
         return I18N.OP_OVERWRITE_FILE.get(language) + this.suffix();
     }
 

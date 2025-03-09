@@ -3,88 +3,99 @@ package com.github.springerris.archive.vfs.sftp;
 import com.github.springerris.archive.vfs.AbstractVFS;
 import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
-import com.github.springerris.archive.vfs.fs.FilesystemVFS;
-import net.schmizz.sshj.sftp.RemoteFile;
-import net.schmizz.sshj.sftp.RemoteResource;
-import net.schmizz.sshj.sftp.RemoteResourceInfo;
-import net.schmizz.sshj.sftp.SFTPClient;
+import com.github.springerris.util.ssh.RemoteFileInputStream;
+import com.github.springerris.util.ssh.RemoteFileOutputStream;
+import net.schmizz.sshj.sftp.*;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.EnumSet;
 import java.util.List;
-import java.util.Objects;
 
+@ApiStatus.Internal
 public class SFTPVFS extends AbstractVFS {
 
-    private final SFTPClient sftpClient;
-    private final RemoteResource root;
+    private final SFTPClient client;
+    private final String root;
 
-    public SFTPVFS(RemoteResource root, SFTPClient sftpClient) {
-        this.sftpClient = sftpClient;
+    private SFTPVFS(SFTPClient client, String root) {
+        this.client = client;
         this.root = root;
     }
 
-    @Override
-    public VFS sub(String name) {
-        try {
-            RemoteResource rs = this.sftpClient.open("./" + name);
-            List<RemoteResourceInfo> rri = this.sftpClient.ls("./");
-            RemoteResourceInfo rriSpecific = null;
-            for (RemoteResourceInfo r : rri) {
-                if (Objects.equals(r.getName(), name)) {
-                    rriSpecific = r;
-                }
-            }
-            if (rriSpecific != null) {
-                if (rriSpecific.isDirectory()) {
-                    throw new IllegalArgumentException("Path \"" + rriSpecific.getPath() + "\" is not a directory");
-                }
-            }
+    public SFTPVFS(SFTPClient client) {
+        this(client, "./");
+    }
 
-            return new SFTPVFS(rs,sftpClient);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    //
+
+    @Override
+    public @NotNull VFS sub(@NotNull String name) {
+        String subName = this.root;
+        if (!name.isEmpty()) {
+            subName += name;
+            if (name.charAt(name.length() - 1) != '/') subName += "/";
         }
+        return new SFTPVFS(this.client, subName);
     }
 
     @Override
-    public VFSEntity[] list() throws IOException {
-        return new VFSEntity[0];
+    public @NotNull VFSEntity @NotNull [] list() throws IOException {
+        List<RemoteResourceInfo> list = this.client.ls(this.root);
+        int size = list.size();
+        VFSEntity[] ret = new VFSEntity[size];
+        for (int i=0; i < size; i++)
+            ret[i] = new SFTPResourceVFSEntity(list.get(i));
+        return ret;
     }
 
     @Override
-    public VFSEntity stat(String name) {
-        RemoteResource rs;
-        return null;
+    public @NotNull VFSEntity stat(@NotNull String name) {
+        FileAttributes attrs;
+        try {
+            attrs = this.client.stat(this.root + name);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Unable to stat \"" + name + "\"", e);
+        }
+        int whereSlash = name.lastIndexOf('/');
+        if (whereSlash != -1) name = name.substring(whereSlash + 1);
+        return new SFTPAttributesVFSEntity(name, attrs);
     }
 
     @Override
-    public boolean exists(String name) {
-        return false;
+    public boolean exists(@NotNull String name) {
+        FileAttributes attrs;
+        try {
+            attrs = this.client.stat(this.root + name);
+        } catch (IOException e) {
+            return false;
+        }
+        return attrs.getType() != FileMode.Type.UNKNOWN;
     }
 
     @Override
-    public InputStream read(String name) throws IOException {
-
-        return null;
+    public @NotNull InputStream read(@NotNull String name) throws IOException {
+        RemoteFile rf = this.client.open(this.root + name, EnumSet.of(OpenMode.READ));
+        return new RemoteFileInputStream(rf);
     }
 
     @Override
-    public OutputStream write(String name) throws IOException {
-        return null;
+    public @NotNull OutputStream write(@NotNull String name) throws IOException {
+        RemoteFile rf = this.client.open(this.root + name, EnumSet.of(OpenMode.WRITE, OpenMode.CREAT, OpenMode.TRUNC));
+        return new RemoteFileOutputStream(rf);
     }
 
     @Override
-    public void createDirectory(String name) throws IOException {
-
+    public void createDirectory(@NotNull String name) throws IOException {
+        this.client.mkdirs(this.root + name);
     }
 
     @Override
-    public void mount(String localPath, String remotePath, VFS remote) throws UnsupportedOperationException {
-
+    public void mount(@NotNull String localPath, @NotNull String remotePath, @NotNull VFS remote) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("Cannot mount to SFTPVFS");
     }
 
 }

@@ -19,7 +19,6 @@ public final class I18N {
 
     public static final LangString LIFECYCLE_START = builder()
             .en("Starting PP2024")
-
             .build();
 
     public static final LangString LIFECYCLE_CONTEXT = builder()
@@ -44,7 +43,7 @@ public final class I18N {
 
     public static final LangString WINDOW_MAIN_BUTTON_ADD = builder()
             .en("Add")
-            .ru("Добавить файл") // TODO: Abbreviate
+            .ru("Добавить файл")
             .build();
 
     public static final LangString WINDOW_MAIN_BUTTON_IMPORT = builder()
@@ -54,12 +53,12 @@ public final class I18N {
 
     public static final LangString WINDOW_MAIN_BUTTON_EXPORT = builder()
             .en("Export")
-            .ru("Отправить архив в..") // TODO: Abbreviate
+            .ru("Отправить архив в..")
             .build();
 
     public static final LangString WINDOW_MAIN_BUTTON_SYNC = builder()
             .en("Sync")
-            .ru("Распаковать") // TODO: Abbreviate
+            .ru("Распаковать")
             .build();
 
     public static final LangString WINDOW_MAIN_ERROR_ADD_FILE = builder()
@@ -77,12 +76,17 @@ public final class I18N {
             .ru("Записать архив")
             .build();
 
-    public static final LangString WINDOW_EXPORT_OPTION_ZIP_TYPE_BASIC = builder()
+    public static final LangString FILE_TYPE_ALL = builder()
+            .en("All files")
+            // TODO: ru
+            .build();
+
+    public static final LangString FILE_TYPE_ZIP = builder()
             .en("ZIP")
             .ru("ZIP")
             .build();
 
-    public static final LangString WINDOW_EXPORT_OPTION_ZIP_TYPE_ENCRYPTED = builder()
+    public static final LangString FILE_TYPE_ZIP_ENCRYPTED = builder()
             .en("Encrypted ZIP")
             .ru("Шифрованный ZIP")
             .build();
@@ -92,9 +96,79 @@ public final class I18N {
             .ru("Отправить на Yandex Disk")
             .build();
 
-    public static final LangString WINDOW_EXPORT_OPTION_DRIVE = builder()
-            .en("Upload to Google Drive")
-            .ru("Отправить на Google Drive")
+    public static final LangString WINDOW_EXPORT_OPTION_SFTP = builder()
+            .en("Upload via SFTP")
+            .ru("Отправить по SFTP")
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_TITLE = builder()
+            .en("Connect to SFTP")
+            .ru("Поключение к SFTP")
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_CONFIRM = builder()
+            .en("Connect")
+            .ru("Подключится")
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_CANCEL = builder()
+            .en("Cancel")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_HOST = builder()
+            .en("Host")
+            .ru("Хост")
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_PORT = builder()
+            .en("Port")
+            .ru("Порт")
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_USERNAME = builder()
+            .en("Username")
+            .ru("Пользователь")
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_AUTHENTICATION = builder()
+            .en("Authentication")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_NONE = builder()
+            .en("None")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_NONE_DESC = builder()
+            .en("No authentication will be performed")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_PASSWORD = builder()
+            .en("Password")
+            .ru("Пароль")
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_PRIVATE_KEY = builder()
+            .en("Private Key")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_PRIVATE_KEY_DESC = builder()
+            .en("System will be searched for keys")
+            // TODO: ru
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_ERROR_AUTH = builder()
+            .en("Authentication failed. Provided password or key may be incorrect.")
+            .ru("Логин и пароль не подошли под данный хост")
+            .build();
+
+    public static final LangString WINDOW_CONNECT_SFTP_ERROR_IO = builder()
+            .en("Failed to connect to server. See log for more details.")
+            .ru("Не удалось подключится к удалённому хосту")
             .build();
 
     public static final LangString WINDOW_IMPORT_TITLE = builder()
@@ -127,9 +201,14 @@ public final class I18N {
             .ru("Неправильный формат (ZIP не был создан)")
             .build();
 
+    public static final LangString WINDOW_IMPORT_YANDEX_TITLE = builder()
+            .en("Select an archive to download")
+            .ru("Выберите архив для скачивания")
+            .build();
+
     public static final LangString WINDOW_SYNC_TITLE = builder()
             .en("Sync")
-            .ru("Распаковать архив") // TODO: Verify
+            .ru("Распаковать архив")
             .build();
 
     public static final LangString WINDOW_SYNC_CONFIRM = builder()
@@ -187,6 +266,11 @@ public final class I18N {
             .ru("Введите название файла для архива")
             .build();
 
+    public static final LangString RECEIVE_CONFLICT = builder()
+            .en("An archive with this name already exists. Replace?")
+            .ru("Такой архив уже есть в данной директории, заменить?")
+            .build();
+
     public static final LangString OP_WRITE_NEW_FILE = builder()
             .en("Write new file")
             .ru("Записать новый файл")
@@ -210,6 +294,21 @@ public final class I18N {
     public static final LangString OP_DELETE_DIR = builder()
             .en("Delete directory")
             .ru("Удалить папку")
+            .build();
+
+    public static final LangString PICKER_OPEN = builder()
+            .en("Open")
+            // TODO: ru
+            .build();
+
+    public static final LangString PICKER_HIDE_DOT_FILES = builder()
+            .en("Hide dotfiles")
+            // TODO: ru
+            .build();
+
+    public static final LangString PICKER_CONFLICT = builder()
+            .en("File already exists. Replace?")
+            // TODO: ru
             .build();
 
 }

@@ -2,6 +2,7 @@ package com.github.springerris.archive.vfs.cb;
 
 import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An entity which defers to an entity in a foreign VFS.
@@ -26,18 +27,18 @@ class CorkboardVFSLink implements VFSEntity {
 
     //
 
-    public VFS vfs() {
+    public @NotNull VFS vfs() {
         return this.vfs;
     }
 
-    public String path() {
+    public @NotNull String path() {
         return this.path;
     }
 
     //
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         return this.name;
     }
 

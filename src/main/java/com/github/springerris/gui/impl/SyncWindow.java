@@ -6,6 +6,7 @@ import com.github.springerris.gui.helper.BorderWindow;
 import com.github.springerris.i18n.I18N;
 import com.github.springerris.op.DiskOperation;
 import com.github.springerris.op.DiskOperationQueue;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +19,8 @@ public class SyncWindow extends BorderWindow {
 
     private DiskOperationQueue operations;
 
-    public SyncWindow(WindowContext ctx) {
-        super(ctx, I18N.WINDOW_SYNC_TITLE.get(), 640, 480);
+    public SyncWindow(@NotNull WindowContext ctx) {
+        super(ctx, I18N.WINDOW_SYNC_TITLE, 640, 480);
     }
 
     //
@@ -74,10 +75,10 @@ public class SyncWindow extends BorderWindow {
 
     //
 
-    private void doExtract(CompletableFuture<Boolean> future) {
+    private void doExtract(@NotNull CompletableFuture<Boolean> future) {
         boolean result = this.operations.execute(this.ctx.logger());
         if (!result) {
-            this.showError(I18N.WINDOW_SYNC_ERROR.get());
+            this.showError(I18N.WINDOW_SYNC_ERROR);
         }
         future.complete(result);
     }

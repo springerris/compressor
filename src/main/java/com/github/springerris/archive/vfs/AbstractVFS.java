@@ -1,5 +1,7 @@
 package com.github.springerris.archive.vfs;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -8,11 +10,11 @@ import java.util.Arrays;
  */
 public abstract class AbstractVFS implements VFS {
 
-    protected String treeTitle() {
+    protected @NotNull String treeTitle() {
         return this.getClass().getSimpleName();
     }
 
-    private void toString0(StringBuilder sb, int pad) {
+    private void toString0(@NotNull StringBuilder sb, int pad) {
         char[] padChars = new char[pad];
         Arrays.fill(padChars, '│');
 
@@ -65,7 +67,7 @@ public abstract class AbstractVFS implements VFS {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.treeTitle()).append('\n');
         this.toString0(sb, 0);

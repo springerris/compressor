@@ -1,6 +1,5 @@
 package com.github.springerris;
 
-import com.github.springerris.archive.Archive;
 import com.github.springerris.gui.impl.MainWindow;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.i18n.I18N;
@@ -21,8 +20,7 @@ public class Main {
         setupSwing(logger);
 
         // Create a WindowContext
-        Archive archive = new Archive();
-        final WindowContext ctx = new WindowContext(logger, archive);
+        final WindowContext ctx = new WindowContext(logger);
         logger.log(Level.INFO, I18N.LIFECYCLE_CONTEXT.get());
 
         // Open main window

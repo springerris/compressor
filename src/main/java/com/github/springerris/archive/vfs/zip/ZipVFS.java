@@ -4,6 +4,8 @@ import com.github.springerris.archive.vfs.AbstractVFS;
 import com.github.springerris.archive.vfs.VFS;
 import com.github.springerris.archive.vfs.VFSEntity;
 import io.github.wasabithumb.magma4j.Magma;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.*;
@@ -15,6 +17,7 @@ import java.util.zip.ZipInputStream;
 /**
  * A {@link VFS} which represents the content of a zip/encrypted zip file on the filesystem
  */
+@ApiStatus.Internal
 public class ZipVFS extends AbstractVFS implements VFSEntity, ZipEntryProvider {
 
     private final File file;
@@ -74,14 +77,14 @@ public class ZipVFS extends AbstractVFS implements VFSEntity, ZipEntryProvider {
     //
 
     @Override
-    public VFS sub(String name) {
+    public @NotNull VFS sub(@NotNull String name) {
         if (name.isEmpty()) return this;
         if (!name.endsWith("/")) name += "/";
         return new ZipVFS(this.file, this.prefix + name, this.key, this.entryProvider);
     }
 
     @Override
-    public VFSEntity[] list() throws IOException {
+    public @NotNull VFSEntity @NotNull [] list() throws IOException {
         int capacity = 8;
         int len = 0;
         VFSEntity[] ret = new VFSEntity[capacity];
@@ -111,7 +114,7 @@ public class ZipVFS extends AbstractVFS implements VFSEntity, ZipEntryProvider {
     }
 
     @Override
-    public VFSEntity stat(String name) {
+    public @NotNull VFSEntity stat(@NotNull String name) {
         if (name.isEmpty()) return this;
         VFSEntity ret = this.stat0(name);
         if (ret == null) throw new AssertionError("Failed to stat \"" + name + "\"");
@@ -143,7 +146,7 @@ public class ZipVFS extends AbstractVFS implements VFSEntity, ZipEntryProvider {
     }
 
     @Override
-    public boolean exists(String name) {
+    public boolean exists(@NotNull String name) {
         try {
             return this.getEntry(this.prefix + name) != null;
         } catch (IOException ignored) {
@@ -152,7 +155,7 @@ public class ZipVFS extends AbstractVFS implements VFSEntity, ZipEntryProvider {
     }
 
     @Override
-    public InputStream read(String name) throws IOException {
+    public @NotNull InputStream read(@NotNull String name) throws IOException {
         ZipInputStream zis = this.open();
         boolean close = true;
         try {
@@ -178,24 +181,24 @@ public class ZipVFS extends AbstractVFS implements VFSEntity, ZipEntryProvider {
     }
 
     @Override
-    public OutputStream write(String name) {
+    public @NotNull OutputStream write(@NotNull String name) {
         throw new UnsupportedOperationException("Cannot write to ZipVFS");
     }
 
     @Override
-    public void createDirectory(String name) {
+    public void createDirectory(@NotNull String name) {
         throw new UnsupportedOperationException("Cannot create directory in ZipVFS");
     }
 
     @Override
-    public void mount(String localPath, String remotePath, VFS remote) throws UnsupportedOperationException {
+    public void mount(@NotNull String localPath, @NotNull String remotePath, @NotNull VFS remote) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Cannot mount in ZipVFS");
     }
 
     //
 
     @Override
-    public String name() {
+    public @NotNull String name() {
         String name = this.file.getName();
         int whereExt = name.lastIndexOf('.');
         if (whereExt == -1) return name;
@@ -219,9 +222,9 @@ public class ZipVFS extends AbstractVFS implements VFSEntity, ZipEntryProvider {
 
     //
 
-    /** INTERNAL USAGE ONLY */
+    @ApiStatus.Internal
     @Override
-    public Collection<ZipEntry> getEntries() throws IOException {
+    public @NotNull Collection<ZipEntry> getEntries() throws IOException {
         List<ZipEntry> ret = new LinkedList<>();
         try (ZipInputStream zis = this.open()) {
             ZipEntry ze;

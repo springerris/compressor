@@ -2,30 +2,30 @@ package com.github.springerris.archive.vfs.sftp;
 
 import com.github.springerris.archive.vfs.VFSEntity;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.zip.ZipEntry;
-
-public record SFTPEntity(
-        RemoteResourceInfo handle,
-        String name
+record SFTPResourceVFSEntity(
+        RemoteResourceInfo handle
 ) implements VFSEntity {
+
     @Override
-    public String name() {
-        return handle.getName();
+    public @NotNull String name() {
+        return this.handle.getName();
     }
 
     @Override
     public boolean isFile() {
-        return handle.isRegularFile();
+        return this.handle.isRegularFile();
     }
 
     @Override
     public boolean isDirectory() {
-        return handle.isDirectory();
+        return this.handle.isDirectory();
     }
 
     @Override
     public long size() {
-        return handle.getAttributes().getSize();
+        return this.handle.getAttributes().getSize();
     }
+
 }

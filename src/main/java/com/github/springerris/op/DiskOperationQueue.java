@@ -1,5 +1,8 @@
 package com.github.springerris.op;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.AbstractQueue;
 import java.util.Iterator;
@@ -15,7 +18,7 @@ import java.util.logging.Logger;
 public class DiskOperationQueue extends AbstractQueue<DiskOperation> {
 
     private final Queue<DiskOperation> backing;
-    public DiskOperationQueue(Queue<DiskOperation> backing) {
+    public DiskOperationQueue(@NotNull Queue<DiskOperation> backing) {
         this.backing = backing;
     }
 
@@ -26,7 +29,7 @@ public class DiskOperationQueue extends AbstractQueue<DiskOperation> {
     //
 
     @Override
-    public Iterator<DiskOperation> iterator() {
+    public @NotNull Iterator<DiskOperation> iterator() {
         return this.backing.iterator();
     }
 
@@ -36,17 +39,17 @@ public class DiskOperationQueue extends AbstractQueue<DiskOperation> {
     }
 
     @Override
-    public boolean offer(DiskOperation diskOperation) {
+    public boolean offer(@NotNull DiskOperation diskOperation) {
         return this.backing.offer(diskOperation);
     }
 
     @Override
-    public DiskOperation poll() {
+    public @Nullable DiskOperation poll() {
         return this.backing.poll();
     }
 
     @Override
-    public DiskOperation peek() {
+    public @Nullable DiskOperation peek() {
         return this.backing.peek();
     }
 
@@ -57,7 +60,7 @@ public class DiskOperationQueue extends AbstractQueue<DiskOperation> {
      * @param logger Logger to receive debug messages & warnings
      * @return True if all operations executed successfully
      */
-    public boolean execute(Logger logger) {
+    public boolean execute(@NotNull Logger logger) {
         DiskOperation op;
         while ((op = this.poll()) != null) {
             logger.log(Level.FINE, "Executing disk operation: " + op.description());

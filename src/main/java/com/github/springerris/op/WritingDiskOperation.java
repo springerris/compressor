@@ -1,5 +1,8 @@
 package com.github.springerris.op;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,18 +12,19 @@ import java.util.concurrent.Callable;
 /**
  * @see DiskOperation
  */
+@ApiStatus.Internal
 abstract class WritingDiskOperation extends AbstractDiskOperation {
 
     protected final Callable<InputStream> source;
 
-    public WritingDiskOperation(Path file, Callable<InputStream> source) {
+    public WritingDiskOperation(@NotNull Path file, @NotNull Callable<InputStream> source) {
         super(file);
         this.source = source;
     }
 
     //
 
-    protected InputStream open() throws IOException {
+    protected @NotNull InputStream open() throws IOException {
         try {
             return this.source.call();
         } catch (IOException e) {
@@ -30,7 +34,7 @@ abstract class WritingDiskOperation extends AbstractDiskOperation {
         }
     }
 
-    protected void pipe(InputStream is, OutputStream os) throws IOException {
+    protected void pipe(@NotNull InputStream is, @NotNull OutputStream os) throws IOException {
         byte[] buf = new byte[8192];
         int read;
         while ((read = is.read(buf)) != -1) {

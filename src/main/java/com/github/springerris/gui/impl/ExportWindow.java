@@ -1,9 +1,18 @@
 package com.github.springerris.gui.impl;
 
+import com.github.springerris.archive.vfs.VFS;
+import com.github.springerris.archive.vfs.VFSEntity;
+import com.github.springerris.archive.vfs.yandisk.YanDiskVFS;
 import com.github.springerris.gui.WindowContext;
 import com.github.springerris.gui.helper.ChoiceWindow;
 import com.github.springerris.i18n.I18N;
-import com.github.springerris.util.YanHandler;
+import com.github.springerris.token.TokenType;
+import com.github.springerris.util.SSHHandler;
+import io.github.wasabithumb.yandisk4j.YanDisk;
+import io.github.wasabithumb.yandisk4j.node.accessor.NodeUploader;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -18,18 +27,18 @@ import java.util.logging.Level;
 
 public class ExportWindow extends ChoiceWindow {
 
-    public ExportWindow(WindowContext ctx) {
-        super(ctx, I18N.WINDOW_EXPORT_TITLE.get(), 300, 200);
+    public ExportWindow(@NotNull WindowContext ctx) {
+        super(ctx, I18N.WINDOW_EXPORT_TITLE, 300, 200);
     }
 
     //
 
     @Override
-    protected String[] getChoices() {
+    protected @NotNull String @NotNull [] getChoices() {
         return new String[] {
                 I18N.WINDOW_EXPORT_OPTION_ZIP.get(),
                 I18N.WINDOW_EXPORT_OPTION_YANDEX.get(),
-                "Отправить по SFTP"
+                I18N.WINDOW_EXPORT_OPTION_SFTP.get()
         };
     }
 
@@ -45,8 +54,8 @@ public class ExportWindow extends ChoiceWindow {
     //
 
     private void onClickChoice0() {
-        final String zipDesc = I18N.WINDOW_EXPORT_OPTION_ZIP_TYPE_BASIC.get();
-        final String encryptedZipDesc = I18N.WINDOW_EXPORT_OPTION_ZIP_TYPE_ENCRYPTED.get();
+        final String zipDesc = I18N.FILE_TYPE_ZIP.get();
+        final String encryptedZipDesc = I18N.FILE_TYPE_ZIP_ENCRYPTED.get();
 
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -88,18 +97,29 @@ public class ExportWindow extends ChoiceWindow {
     }
 
     private void onClickChoice1() {
-        YanHandler yh = new YanHandler(this.ctx, this);
-        yh.upload(this.passwordPrompt(true));
+        YanDisk yd = YanDisk.yanDisk(this.ctx.tokens().get(TokenType.YANDEX_DISK));
+
+        VFS vfs = VFS.yanDisk(yd);
+        this.ctx.setRemote(vfs);
+        this.popup(RemoteExportWindow.class);
     }
 
     private void onClickChoice2() {
-        SSHWindow sshWindow = new SSHWindow(ctx,"Поключение к SFTP",500,300);
-        sshWindow.setVisible(true);
+        SSHHandler handler = this.popup(SftpConnectWindow.class);
+        if (handler == null) return; // User aborted
+
+        this.ctx.setRemote(handler.vfs());
+        this.popup(RemoteExportWindow.class);
+
+        try {
+            handler.close();
+        } catch (IOException ignored) { }
     }
 
     //
 
-    private String passwordPrompt(boolean ask) {
+    @Contract("false -> !null")
+    private @Nullable String passwordPrompt(boolean ask) {
         if (ask) {
             int isProtected = JOptionPane.showConfirmDialog(
                     this,
@@ -110,12 +130,7 @@ public class ExportWindow extends ChoiceWindow {
             );
             if (isProtected != JOptionPane.YES_OPTION) return null;
         }
-
-        String password;
-        do {
-            password = JOptionPane.showInputDialog(I18N.STAGE_PASSWORD_PROMPT_ENTER.get());
-        } while (password.isBlank());
-        return password;
+        return this.pester(I18N.STAGE_PASSWORD_PROMPT_ENTER);
     }
 
 }

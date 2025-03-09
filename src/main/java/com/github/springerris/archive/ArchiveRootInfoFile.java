@@ -2,6 +2,8 @@ package com.github.springerris.archive;
 
 import com.github.springerris.util.tsv.TSVReader;
 import com.github.springerris.util.tsv.TSVWriter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -18,24 +20,24 @@ final class ArchiveRootInfoFile implements Iterable<ArchiveRootInfo> {
 
     //
 
-    public List<ArchiveRootInfo> getData() {
+    public @NotNull @Unmodifiable List<ArchiveRootInfo> getData() {
         return Collections.unmodifiableList(this.data);
     }
 
-    public void setData(Collection<ArchiveRootInfo> collection) {
+    public void setData(@NotNull Collection<ArchiveRootInfo> collection) {
         this.data.clear();
         this.data.addAll(collection);
     }
 
     //
 
-    public void read(InputStream is) throws IOException {
+    public void read(@NotNull InputStream is) throws IOException {
         Reader r = new InputStreamReader(is, StandardCharsets.UTF_8);
         TSVReader tr = new TSVReader(r, 2);
         this.read(tr);
     }
 
-    public void read(TSVReader r) throws IOException {
+    public void read(@NotNull TSVReader r) throws IOException {
         r.readHeader();
 
         FileSystem fs = FileSystems.getDefault();
@@ -54,14 +56,14 @@ final class ArchiveRootInfoFile implements Iterable<ArchiveRootInfo> {
 
     //
 
-    public void write(OutputStream os) throws IOException {
+    public void write(@NotNull OutputStream os) throws IOException {
         Writer w = new OutputStreamWriter(os, StandardCharsets.UTF_8);
         TSVWriter tw = new TSVWriter(w);
         this.write(tw);
         tw.flush();
     }
 
-    public void write(TSVWriter w) throws IOException {
+    public void write(@NotNull TSVWriter w) throws IOException {
         w.writeRow("entry", "path");
         for (ArchiveRootInfo info : this.data) {
             w.writeRow(
@@ -74,7 +76,7 @@ final class ArchiveRootInfoFile implements Iterable<ArchiveRootInfo> {
     //
 
     @Override
-    public Iterator<ArchiveRootInfo> iterator() {
+    public @NotNull Iterator<ArchiveRootInfo> iterator() {
         return Collections.unmodifiableList(this.data).iterator();
     }
 
